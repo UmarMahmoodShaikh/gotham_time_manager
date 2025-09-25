@@ -19,8 +19,7 @@ defmodule GothamTimeManager.Tasks.Task do
     field :status, :integer, default: -1
 
     many_to_many :users, User,
-                 join_through: "tasks_users",
-                 on_replace: :delete
+                 join_through: "tasks_users"
 
     timestamps(type: :utc_datetime)
   end
