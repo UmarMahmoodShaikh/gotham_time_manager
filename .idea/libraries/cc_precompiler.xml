@@ -5,6 +5,7 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/deps/cc_precompiler/lib" />
       <root url="file://$PROJECT_DIR$/deps/cc_precompiler/lib" />
+      <root url="file://$PROJECT_DIR$/deps/cc_precompiler/lib" />
     </SOURCES>
   </library>
 </component>

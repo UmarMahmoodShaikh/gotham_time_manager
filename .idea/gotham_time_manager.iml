@@ -155,5 +155,24 @@
     <orderEntry type="library" name="cors_plug" level="project" />
     <orderEntry type="library" name="faker" level="project" />
     <orderEntry type="library" name="earmark" level="project" />
+    <orderEntry type="library" name="cors_plug" level="project" />
+    <orderEntry type="library" name="faker" level="project" />
+    <orderEntry type="library" name="plug" level="project" />
+    <orderEntry type="library" name="plug_crypto" level="project" />
+    <orderEntry type="library" name="telemetry" level="project" />
+    <orderEntry type="library" name="phoenix_pubsub" level="project" />
+    <orderEntry type="library" name="phoenix_template" level="project" />
+    <orderEntry type="library" name="websock_adapter" level="project" />
+    <orderEntry type="library" name="ecto" level="project" />
+    <orderEntry type="library" name="mint" level="project" />
+    <orderEntry type="library" name="db_connection" level="project" />
+    <orderEntry type="library" name="decimal" level="project" />
+    <orderEntry type="library" name="file_system" level="project" />
+    <orderEntry type="library" name="fine" level="project" />
+    <orderEntry type="library" name="elixir_make" level="project" />
+    <orderEntry type="library" name="cc_precompiler" level="project" />
+    <orderEntry type="library" name="mime" level="project" />
+    <orderEntry type="library" name="finch" level="project" />
+    <orderEntry type="library" name="expo" level="project" />
   </component>
 </module>

@@ -5,6 +5,7 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/deps/elixir_make/lib" />
       <root url="file://$PROJECT_DIR$/deps/elixir_make/lib" />
+      <root url="file://$PROJECT_DIR$/deps/elixir_make/lib" />
     </SOURCES>
   </library>
 </component>

@@ -7,7 +7,7 @@ FROM elixir:1.16-alpine AS build
 ENV MIX_ENV=prod \
     LANG=C.UTF-8
 
-# Install system dependencies: build tools, node for esbuild/tailwind
+# Install system dependencies: build tools, node for esbuild/tailwind, and git for deps
 RUN apk add --no-cache \
        build-base \
        git \
