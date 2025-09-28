@@ -1,0 +1,46 @@
+#! web-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: web
+    namespace: gotham-time-manager
+    labels:
+        com.docker.compose.project: gotham_time_manager
+        com.docker.compose.service: web
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: gotham_time_manager
+            com.docker.compose.service: web
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: gotham_time_manager
+                com.docker.compose.service: web
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: web
+                  image: elixir:1.16-alpine
+                  imagePullPolicy: IfNotPresent
+                  command: [sh -c apk add --no-cache git && mix deps.get && mix ecto.create && mix ecto.migrate && mix phx.server]
+                  workingDir: /app
+                  env:
+                    - name: DATABASE_URL
+                      value: "ecto://umarmahmoodshk:postgres@db/gotham_time_manager_dev"
+                    - name: SECRET_KEY_BASE
+                      value: "/jJzAuBnJuZxMvr8QoHMQVQR2f1TqVNLrtgZT5uCFGR2iEx2boq9O1v2E71zNyoU"
+                  ports:
+                    - name: web-4000
+                      containerPort: 4000
+                  volumeMounts:
+                    - name: app
+                      mountPath: /app
+            volumes:
+                - name: app
+                  hostPath:
+                    path: /Users/umarmahmoodshk/gotham_time_manager

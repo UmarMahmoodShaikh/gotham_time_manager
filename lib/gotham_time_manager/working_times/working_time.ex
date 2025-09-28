@@ -31,7 +31,7 @@ defmodule GothamTimeManager.WorkingTimes.WorkingTime do
       DateTime.compare(start_dt, end_dt) == :gt ->
         add_error(changeset, :start, "must be before end")
 
-      true ->
+      true ->docker push umarshk7/gotham_time_manager:latest
         changeset
     end
   end
