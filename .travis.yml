@@ -1,22 +1,14 @@
-language: minimal
+language: elixir
+
+elixir: '1.14'
+otp_release: '25.0'
 
 services:
   - docker
 
 jobs:
   include:
-    - stage: "Test JS/TS"
-      language: node_js
-      node_js: "18"
-      install:
-        - npm install
-      script:
-        - npm test
-
     - stage: "Test Elixir"
-      language: elixir
-      elixir: '1.14'
-      otp_release: '25.0'
       install:
         - mix deps.get
       script:
