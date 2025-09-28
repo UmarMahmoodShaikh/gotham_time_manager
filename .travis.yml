@@ -10,6 +10,8 @@ jobs:
   include:
     - stage: "Test Elixir"
       install:
+        - mix local.hex --force
+        - mix local.rebar --force
         - mix deps.get
       script:
         - mix test
