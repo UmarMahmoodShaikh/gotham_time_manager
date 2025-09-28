@@ -16,17 +16,23 @@ defmodule GothamTimeManager.WorkingTimes.WorkingTime do
     working_time
     |> cast(attrs, [:start, :end, :user_id])
     |> validate_required([:start, :end, :user_id])
-    |> validate_change(:start, fn :start, start_dt ->
-      end_dt = get_field(%{working_time | start: start_dt}, :end)
-      cond do
-        is_nil(end_dt) ->
-          []
-        DateTime.compare(start_dt, end_dt) == :gt ->
-          [start: "must be before end"]
-        true ->
-          []
-      end
-    end)
+    |> validate_start_before_end()
     |> assoc_constraint(:user)
+  end
+
+  defp validate_start_before_end(changeset) do
+    start_dt = get_field(changeset, :start)
+    end_dt = get_field(changeset, :end)
+
+    cond do
+      is_nil(start_dt) or is_nil(end_dt) ->
+        changeset
+
+      DateTime.compare(start_dt, end_dt) == :gt ->
+        add_error(changeset, :start, "must be before end")
+
+      true ->
+        changeset
+    end
   end
 end
