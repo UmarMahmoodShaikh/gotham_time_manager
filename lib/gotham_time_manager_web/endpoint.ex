@@ -49,6 +49,7 @@ defmodule GothamTimeManagerWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+  plug CORSPlug, origin: ["*"]
   plug Plug.Session, @session_options
   plug GothamTimeManagerWeb.Router
 end

@@ -22,7 +22,13 @@ import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import {hooks as colocatedHooks} from "phoenix-colocated/gotham_time_manager"
+let colocatedHooks = {}
+try {
+  // Available in dev via phoenix_colocated, not in prod builds
+  colocatedHooks = require("phoenix-colocated/gotham_time_manager").hooks || {}
+} catch (e) {
+  colocatedHooks = {}
+}
 import topbar from "../vendor/topbar"
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
