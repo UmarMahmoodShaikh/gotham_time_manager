@@ -86,3 +86,10 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Development-specific CORS configuration
+config :cors_plug,
+  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3003", "http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://127.0.0.1:3002", "http://127.0.0.1:3003", "http://localhost:4000", "http://127.0.0.1:4000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+  headers: ["Accept", "Content-Type", "Authorization", "X-Requested-With"]
