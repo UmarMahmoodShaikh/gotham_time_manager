@@ -1,10 +1,17 @@
 language: elixir
 
-elixir: '1.14'
+elixir: '1.15'
 otp_release: '25.0'
 
 services:
   - docker
+
+cache:
+  directories:
+    - deps
+    - _build
+    - ~/.hex
+    - ~/.mix
 
 jobs:
   include:
