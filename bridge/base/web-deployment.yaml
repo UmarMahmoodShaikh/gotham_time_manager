@@ -33,7 +33,7 @@ spec:
                     - name: DATABASE_URL
                       value: "ecto://umarmahmoodshk:postgres@db/gotham_time_manager_dev"
                     - name: SECRET_KEY_BASE
-                      value: "/jJzAuBnJuZxMvr8QoHMQVQR2f1TqVNLrtgZT5uCFGR2iEx2boq9O1v2E71zNyoU"
+                      value: ${SECRET_KEY_BASE}
                   ports:
                     - name: web-4000
                       containerPort: 4000

@@ -29,11 +29,11 @@ spec:
                   imagePullPolicy: IfNotPresent
                   env:
                     - name: POSTGRES_DB
-                      value: "gotham_time_manager_dev"
+                      value: ${POSTGRES_DB}
                     - name: POSTGRES_PASSWORD
-                      value: "postgres"
+                      value: ${POSTGRES_PASSWORD}
                     - name: POSTGRES_USER
-                      value: "umarmahmoodshk"
+                      value: ${POSTGRES_USER}
                   ports:
                     - name: db-5432
                       containerPort: 5432
