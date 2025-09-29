@@ -4,3 +4,7 @@ build:
 
 run:
   web: /app/bin/gotham_time_manager start
+
+release:
+  command:
+    - _build/prod/rel/gotham_time_manager/bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"
