@@ -8,6 +8,23 @@ defmodule GothamTimeManager.Accounts do
 
   alias GothamTimeManager.Accounts.User
 
+
+  def authenticate_user(email, password) do
+    user = Repo.get_by(User, email: email)
+
+    cond do
+      user && check_password(user, password) ->
+        {:ok, user}
+      true ->
+        {:error, :unauthorized}
+    end
+  end
+
+  defp check_password(user, password) do
+    # Replace with your password hashing logic, e.g. Bcrypt
+    user.hashed_password && Bcrypt.verify_pass(password, user.hashed_password)
+  end
+
   @doc """
   Returns the list of users.
 

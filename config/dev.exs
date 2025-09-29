@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :gotham_time_manager, GothamTimeManager.Repo,
-  username: "umarmahmoodshk",
-  password: "postgres",
+  username: "mahpara",
+  password: "001995",
   hostname: "localhost",
   database: "gotham_time_manager_dev",
   stacktrace: true,

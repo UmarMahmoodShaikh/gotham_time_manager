@@ -40,6 +40,7 @@ defmodule GothamTimeManagerWeb.UserController do
     end
   end
 
+
   def delete(conn, %{"id" => id}) do
 #    user = Accounts.get_user!(id)
 #
@@ -56,5 +57,23 @@ defmodule GothamTimeManagerWeb.UserController do
           send_resp(conn, 204, "User Deleted Successfully")
         end
     end
+  end
+
+   def login(conn, %{"email" => email, "password" => password}) do
+    case Accounts.authenticate_user(email, password) do
+      {:ok, user} ->
+        # You can generate a token here if you use JWT or similar
+        render(conn, :show, user: user)
+      {:error, :unauthorized} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: "Invalid email or password"})
+    end
+  end
+
+  def login(conn, _params) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{error: "Missing email or password"})
   end
 end

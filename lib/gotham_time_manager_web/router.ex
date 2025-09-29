@@ -15,7 +15,10 @@ defmodule GothamTimeManagerWeb.Router do
     pipe_through :api
     resources "/users", UserController, except: []
     resources "/tasks", TaskController, except: [] do
-      get "/users/:user_id", TaskController, :by_user
+    get "/users/:user_id", TaskController, :by_user
     end
+     post "/login", UserController, :login
   end
 end
+
+  
