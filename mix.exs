@@ -11,7 +11,14 @@ defmodule GothamTimeManager.MixProject do
       aliases: aliases(),
       deps: deps(),
       compilers: [:phoenix_live_view] ++ Mix.compilers(),
-      listeners: [Phoenix.CodeReloader]
+      listeners: [Phoenix.CodeReloader],
+      releases: [
+        gotham_time_manager: [
+          include_executables_for: [:unix],
+          steps: [:assemble, :tar]
+        ]
+      ]
+
     ]
   end
 
