@@ -91,5 +91,6 @@ That’s it. With these settings, deploying to Heroku using the container stack 
 - Prefer a single-quoted string for release.command to avoid YAML parsing issues:
   release:
     command: '/app/bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"'
+- If you nested run.web, try removing the optional "image: web" key to avoid schema quirks on certain regions.
 - Remove extra trailing blank lines at the end of heroku.yml (some pipelines are picky).
 - Retry the build: sometimes the message is transient on Heroku's side; rerun git push heroku main.
