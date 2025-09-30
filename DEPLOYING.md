@@ -64,6 +64,7 @@ Troubleshooting
   - Ensure the app is on the container stack: heroku stack:set container -a gtm-be-api.
   - Ensure heroku.yml exists at repo root and declares build/run/release.
   - Our heroku.yml uses /app/bin/gotham_time_manager (matches the Dockerfile release output).
+  - If you still see the error, prefer using a single-string release.command (not a YAML list) to avoid parser quirks on some Heroku pipelines.
 
 - Database SSL errors locally:
   - runtime.exs defaults DB_SSL=true (production-safe). For local Postgres without SSL, use the provided script which sets DB_SSL=false.
