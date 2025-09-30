@@ -30,9 +30,11 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+  ssl? = System.get_env("DB_SSL", "true") in ~w(true 1)
+
   config :gotham_time_manager, GothamTimeManager.Repo,
     url: database_url,
-    ssl: true,
+    ssl: ssl?,
     ssl_opts: [verify: :verify_none],
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     # For machines with several cores, consider starting multiple pools of `pool_size`
