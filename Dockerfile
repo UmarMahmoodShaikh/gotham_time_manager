@@ -47,7 +47,6 @@ FROM alpine:3.19 AS app
 ENV MIX_ENV=prod \
     LANG=C.UTF-8 \
     HOME=/app \
-    PHX_SERVER=true \
     PORT=4000
 
 # Install runtime deps for Elixir/Erlang INCLUDING C++ standard library

@@ -21,7 +21,7 @@ Required config vars
 
 Files involved
 - heroku.yml: defines how to build and run the container, and the release phase migrations.
-- Dockerfile: multi-stage build producing /app/bin/gotham_time_manager.
+- Dockerfile: multi-stage build producing /app/bin/gotham_time_manager. Note: PHX_SERVER is not set globally in the image to prevent the release phase from unintentionally starting the web server.
 - Procfile: not required when using heroku.yml with the container stack. This repo omits Procfile to avoid confusion; heroku.yml defines build, run, and release phases.
 - config/runtime.exs: reads DATABASE_URL, SECRET_KEY_BASE, PORT, PHX_HOST, DB_SSL.
 - scripts/local_heroku_check.sh: optional local verification of the Heroku-like flow.
@@ -72,6 +72,10 @@ Troubleshooting
 - Migrations didn’t run on deploy:
   - Confirm the release command exists in heroku.yml (release.command).
   - Check logs: heroku logs --tail to see the release phase output.
+
+- Two processes appear to start right after deploy:
+  - Ensure PHX_SERVER is NOT set globally in the Dockerfile ENV (we removed it).
+  - heroku.yml run.web sets PHX_SERVER=true only for the web process; the release phase runs without PHX_SERVER and won’t start the HTTP server.
 
 Rollback
 - You can roll back to the previous release:

@@ -3,7 +3,11 @@ build:
     web: Dockerfile
 
 run:
-  web: /app/bin/gotham_time_manager start
+  web:
+    command: /app/bin/gotham_time_manager start
+    image: web
+    environment:
+      PHX_SERVER: true
 
 release:
   command: '/app/bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"'
