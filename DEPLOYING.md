@@ -22,7 +22,7 @@ Required config vars
 Files involved
 - heroku.yml: defines how to build and run the container, and the release phase migrations.
 - Dockerfile: multi-stage build producing /app/bin/gotham_time_manager.
-- Procfile: kept for compatibility; not strictly required when using heroku.yml, but matches the same commands.
+- Procfile: not required when using heroku.yml with the container stack. This repo omits Procfile to avoid confusion; heroku.yml defines build, run, and release phases.
 - config/runtime.exs: reads DATABASE_URL, SECRET_KEY_BASE, PORT, PHX_HOST, DB_SSL.
 - scripts/local_heroku_check.sh: optional local verification of the Heroku-like flow.
 
