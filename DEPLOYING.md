@@ -80,3 +80,12 @@ Rollback
    heroku releases:rollback vNN -a gtm-be-api
 
 That’s it. With these settings, deploying to Heroku using the container stack should be smooth and consistent with local verification.
+
+## Additional troubleshooting: Unknown error at "Fetching app code"
+- Ensure the app is using the container stack: heroku stack:set container -a <your-app>
+- Confirm heroku.yml is at the repository root and valid YAML.
+- Prefer a single-quoted string for release.command to avoid YAML parsing issues:
+  release:
+    command: '/app/bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"'
+- Remove extra trailing blank lines at the end of heroku.yml (some pipelines are picky).
+- Retry the build: sometimes the message is transient on Heroku's side; rerun git push heroku main.
