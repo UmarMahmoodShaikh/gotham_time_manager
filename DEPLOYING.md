@@ -15,6 +15,7 @@ Required config vars
 - SECRET_KEY_BASE: generate with mix phx.gen.secret (store as Heroku config var).
 - DATABASE_URL: provided by Heroku Postgres add-on or set manually (ecto://USER:PASS@HOST:5432/DBNAME).
 - PHX_HOST: your app hostname (e.g., your-app.herokuapp.com or custom domain).
+- PHX_SERVER: set to true (so the web dyno starts the HTTP server). We moved it out of heroku.yml run block for maximum parser compatibility.
 - PORT: set by Heroku (do not override).
 - POOL_SIZE: optional, defaults to 10.
 - DB_SSL: optional; defaults to true in prod. Heroku Postgres supports SSL; leave this as true.
@@ -41,6 +42,8 @@ One-time app setup
 Deploy using heroku.yml
 - With the container stack and heroku.yml present, a simple git push triggers Heroku to build the Docker image and run the release phase:
    heroku git:remote -a gtm-be-api
+   # Ensure PHX_SERVER is set in config vars since heroku.yml uses short-form run.web now
+   heroku config:set PHX_SERVER=true -a gtm-be-api
    git push heroku main
 
 What happens during deploy
@@ -91,6 +94,12 @@ That’s it. With these settings, deploying to Heroku using the container stack 
 - Prefer a single-quoted string for release.command to avoid YAML parsing issues:
   release:
     command: '/app/bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"'
-- If you nested run.web, try removing the optional "image: web" key to avoid schema quirks on certain regions.
+- Use short-form run.web to minimize YAML nesting and set PHX_SERVER in Heroku config vars (we’ve done this in this repo):
+  run:
+    web: /app/bin/gotham_time_manager start
 - Remove extra trailing blank lines at the end of heroku.yml (some pipelines are picky).
 - Retry the build: sometimes the message is transient on Heroku's side; rerun git push heroku main.
+- If failure persists, capture Heroku debug info and share the Build ID and activity log:
+  heroku builds:info -a <app> b1443296-3c19-4d2e-9686-b5fd659515af
+  heroku releases -a <app>
+  heroku logs --tail -a <app>
