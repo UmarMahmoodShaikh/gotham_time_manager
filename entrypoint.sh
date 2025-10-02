@@ -2,6 +2,11 @@
 # exit if any command fails
 set -e
 
+# If arguments are passed, run them and exit (used by Heroku release phase)
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
 # Load environment variables from .env if it exists (local dev only)
 if [ -f ".env" ]; then
   # shellcheck disable=SC2046
