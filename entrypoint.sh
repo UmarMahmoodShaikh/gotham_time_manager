@@ -1,50 +1,45 @@
 #!/bin/sh
-# exit if any command fails
+# Exit on any error
 set -e
 
-# If arguments are passed, run them and exit (used by Heroku release phase)
-if [ "$#" -gt 0 ]; then
-  exec "$@"
-fi
-
-# Load environment variables from .env if it exists (local dev only)
-if [ -f ".env" ]; then
-  # shellcheck disable=SC2046
-  export $(grep -v '^#' .env | xargs)
-fi
-
-# Ensure the Phoenix server starts in releases
+# Ensure the Phoenix server starts in production mode
 export PHX_SERVER=true
 
-# Determine Postgres host and port
-DB_HOST="${POSTGRES_HOST:-}"
-DB_PORT="${POSTGRES_PORT:-}"
+# Only perform database checks in local development (not on Heroku)
+if [ -z "$DYNO" ]; then
+  echo "===> Local development environment detected"
 
-if [ -z "$DB_HOST" ] || [ -z "$DB_PORT" ]; then
-  if [ -n "$DATABASE_URL" ]; then
-    # Extract host and port from DATABASE_URL (ecto/postgres URL)
-    # Examples: postgres://user:pass@host:5432/db or ecto://user@host/db
-    DB_HOST=$(printf "%s" "$DATABASE_URL" | sed -E 's#^[a-z]+://([^:@/]+)(:[0-9]+)?/.*$#\1#')
-    DB_PORT=$(printf "%s" "$DATABASE_URL" | sed -nE 's#^[a-z]+://[^:@/]+:([0-9]+)/.*$#\1#p')
-    [ -z "$DB_PORT" ] && DB_PORT=5432
+  # Load .env file if it exists (local dev only)
+  if [ -f ".env" ]; then
+    echo "===> Loading environment from .env file..."
+    export $(grep -v '^#' .env | xargs)
   fi
-fi
 
-if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then
-  echo "===> Checking Postgres at $DB_HOST:$DB_PORT..."
-  # Wait until Postgres is ready (nc from busybox is usually available on Alpine)
-  until nc -z "$DB_HOST" "$DB_PORT"; do
-    sleep 1
-  done
-  echo "===> Postgres is ready!"
+  # Check if netcat is available and DATABASE_URL is set
+  if command -v nc >/dev/null 2>&1 && [ -n "$DATABASE_URL" ]; then
+    # Extract host and port from DATABASE_URL
+    DB_HOST=$(echo "$DATABASE_URL" | sed -E 's#^[^/]+//[^@]+@([^:/]+).*#\1#')
+    DB_PORT=$(echo "$DATABASE_URL" | sed -E 's#^[^/]+//[^@]+@[^:]+:([0-9]+).*#\1#')
+
+    # Default to 5432 if port extraction failed
+    if [ -z "$DB_PORT" ] || [ "$DB_PORT" = "$DATABASE_URL" ]; then
+      DB_PORT=5432
+    fi
+
+    echo "===> Waiting for Postgres at $DB_HOST:$DB_PORT..."
+    until nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; do
+      echo "Postgres is unavailable - sleeping"
+      sleep 1
+    done
+    echo "===> Postgres is ready!"
+  else
+    echo "===> Skipping database check (nc not available or DATABASE_URL not set)"
+  fi
 else
-  echo "===> WARNING: Database host/port not set; skipping DB wait. Ensure DATABASE_URL is configured."
+  echo "===> Heroku environment detected - skipping database checks"
 fi
 
-echo "===> Running migrations..."
-# Run migrations with your Release module (idempotent)
-bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"
+echo "===> Starting Phoenix application..."
 
-echo "===> Starting Phoenix app..."
-# Start the Phoenix application
+# Start the Phoenix application using the release binary
 exec bin/gotham_time_manager start
