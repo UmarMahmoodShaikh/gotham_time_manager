@@ -1,0 +1,25 @@
+# Heroku Container Stack manifest for Phoenix (Elixir) app
+# Docs: https://devcenter.heroku.com/articles/build-docker-images-heroku-yml
+
+# Use Heroku Container stack
+setup:
+  addons:
+    - plan: heroku-postgresql:mini
+      as: DATABASE
+
+# Build the Docker image using the Dockerfile at the repository root
+build:
+  docker:
+    web: Dockerfile
+
+# Release phase: run database migrations before each deploy
+# Requires DATABASE_URL and SECRET_KEY_BASE to be configured in Heroku app config vars
+release:
+  command:
+    - mix ecto.migrate
+
+# Runtime: define the web process to start the Phoenix server
+# entrypoint.sh should start the app and respect the PORT env var provided by Heroku
+# Example entrypoint typically does `mix phx.server` after preparing env
+run:
+  web: ./entrypoint.sh

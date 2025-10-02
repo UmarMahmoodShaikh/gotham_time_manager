@@ -35,3 +35,4 @@ gotham_time_manager-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.idea
