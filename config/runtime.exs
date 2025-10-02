@@ -31,8 +31,7 @@ if config_env() == :prod do
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :gotham_time_manager, GothamTimeManager.Repo,
-    ssl: true,
-    ssl_opts: [
+    ssl: [
       verify: :verify_none
     ],
     url: database_url,
