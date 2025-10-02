@@ -11,12 +11,12 @@ setup:
 build:
   docker:
     web: Dockerfile
+    release: Dockerfile
 
-# Release phase: run database migrations before each deploy
+# Release phase: run database migrations before each deploy using the release binary (no Mix)
 # Requires DATABASE_URL and SECRET_KEY_BASE to be configured in Heroku app config vars
 release:
-  command:
-    - mix ecto.migrate
+  command: ./bin/gotham_time_manager eval "GothamTimeManager.Release.migrate"
 
 # Runtime: define the web process to start the Phoenix server
 # entrypoint.sh should start the app and respect the PORT env var provided by Heroku
