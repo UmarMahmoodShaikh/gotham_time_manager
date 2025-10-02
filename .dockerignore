@@ -1,0 +1,27 @@
+# Phoenix build artifacts
+/_build
+/deps
+/cover
+/tmp
+
+# Node / assets dependencies
+/assets/node_modules
+/node_modules
+
+# Git files
+.git
+.gitignore
+
+# Logs & debug files
+*.log
+*.swp
+*.swo
+*.bak
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment & secrets
+.env
+*.secret.exs

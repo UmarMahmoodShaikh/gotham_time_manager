@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: gotham_db
+    restart: always
+    environment:
+      POSTGRES_USER: mahpara
+      POSTGRES_PASSWORD: 001995
+      POSTGRES_DB: gotham_time_manager_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: gotham_app
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    restart: always
+    command: ["./entrypoint.sh"]
+
+volumes:
+  db_data:

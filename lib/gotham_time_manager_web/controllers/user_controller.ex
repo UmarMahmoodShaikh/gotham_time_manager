@@ -59,17 +59,61 @@ defmodule GothamTimeManagerWeb.UserController do
     end
   end
 
-   def login(conn, %{"email" => email, "password" => password}) do
-    case Accounts.authenticate_user(email, password) do
-      {:ok, user} ->
-        # You can generate a token here if you use JWT or similar
-        render(conn, :show, user: user)
-      {:error, :unauthorized} ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{error: "Invalid email or password"})
+  # def login(conn, %{"email" => email, "username" => username, "password" => password}) do
+  #   case Accounts.authenticate_user(email, username, password) do
+  #     {:ok, %User{id: id, email: email, role: role}} ->
+  #       json(conn, %{
+  #         status: "ok",
+  #         user_id: id,
+  #         email: email,
+  #         role: role
+  #       })
+
+  #     {:error, :unauthorized} ->
+  #       conn
+  #       |> put_status(:unauthorized)
+  #       |> json(%{error: "Invalid email or password"})
+  #   end
+  # end
+
+  def login(conn, %{"password" => password} = params) do
+  identifier =
+    cond do
+      Map.has_key?(params, "email") -> {:email, params["email"]}
+      Map.has_key?(params, "username") -> {:username, params["username"]}
+      true -> nil
     end
+
+  case identifier do
+    {:email, email} ->
+      do_login(conn, email, nil, password)
+
+    {:username, username} ->
+      do_login(conn, nil, username, password)
+
+    nil ->
+      conn
+      |> put_status(:bad_request)
+      |> json(%{error: "Missing email or username"})
   end
+end
+
+defp do_login(conn, email, username, password) do
+  case Accounts.authenticate_user(email, username, password) do
+    {:ok, %User{id: id, email: email, role: role}} ->
+      json(conn, %{
+        status: "ok",
+        user_id: id,
+        email: email,
+        role: role
+      })
+
+    {:error, :unauthorized} ->
+      conn
+      |> put_status(:unauthorized)
+      |> json(%{error: "Invalid credentials"})
+  end
+end
 
   def login(conn, _params) do
     conn
