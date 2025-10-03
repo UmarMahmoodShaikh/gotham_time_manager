@@ -13,3 +13,10 @@ build:
 # The command should be defined in your Dockerfile as CMD or ENTRYPOINT
 release:
   image: web
+  command:
+    - /app/bin/gotham_time_manager
+    - eval
+    - "GothamTimeManager.Release.migrate"
+
+run:
+  web: ./entrypoint.sh

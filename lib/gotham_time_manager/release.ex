@@ -10,19 +10,23 @@ defmodule GothamTimeManager.Release do
   @app :gotham_time_manager
 
   def migrate do
-    IO.puts("[release] Loading application #{@app} and running migrations...")
-    Application.load(@app)
+    load_app()
 
-    repos()
-    |> Enum.each(fn repo ->
-      IO.puts("[release] Migrating repo #{inspect(repo)}")
+    for repo <- repos() do
       {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
-    end)
+    end
+  end
 
-    IO.puts("[release] Migrations complete")
+  def rollback(repo, version) do
+    load_app()
+    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
   end
 
   defp repos do
     Application.fetch_env!(@app, :ecto_repos)
+  end
+
+  defp load_app do
+    Application.load(@app)
   end
 end
