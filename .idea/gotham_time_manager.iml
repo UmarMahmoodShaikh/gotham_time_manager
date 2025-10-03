@@ -59,6 +59,9 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/bcrypt_elixir" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/comeonin" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/bcrypt_elixir" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/comeonin" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/elixir_make" />
