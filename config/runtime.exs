@@ -32,7 +32,7 @@ if config_env() == :prod do
 
   config :gotham_time_manager, GothamTimeManager.Repo,
     url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "2"),
     socket_options: maybe_ipv6,
     ssl: [
       verify: :verify_none

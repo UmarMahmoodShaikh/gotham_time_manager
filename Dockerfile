@@ -24,6 +24,13 @@ RUN mix local.hex --force \
 # Cache elixir deps
 COPY mix.exs mix.lock ./
 COPY config ./config
+# In the build stage, after COPY config ./config
+COPY lib ./lib
+COPY priv ./priv
+COPY assets ./assets
+
+# Add this line to verify during build
+RUN ls -la lib/gotham_time_manager/
 RUN mix deps.get --only prod \
  && mix deps.compile
 
