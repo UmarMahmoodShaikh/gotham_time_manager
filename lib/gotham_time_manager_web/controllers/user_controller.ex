@@ -114,10 +114,4 @@ defp do_login(conn, email, username, password) do
       |> json(%{error: "Invalid credentials"})
   end
 end
-
-  def login(conn, _params) do
-    conn
-    |> put_status(:bad_request)
-    |> json(%{error: "Missing email or password"})
-  end
 end
