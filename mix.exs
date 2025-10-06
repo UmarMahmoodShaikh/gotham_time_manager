@@ -66,7 +66,8 @@ defmodule GothamTimeManager.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:jose, "~> 1.11"}
     ]
   end
 
@@ -89,7 +90,8 @@ defmodule GothamTimeManager.MixProject do
         "esbuild gotham_time_manager --minify",
         "phx.digest"
       ],
-      precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"]
+      precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"],
+      "phx.start": ["phx.server"]
     ]
   end
 end

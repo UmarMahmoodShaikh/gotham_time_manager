@@ -60,6 +60,9 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# JWT secret (override in runtime.exs from env)
+config :gotham_time_manager, :jwt_secret, System.get_env("JWT_SECRET") || "dev_insecure_secret_change_me"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

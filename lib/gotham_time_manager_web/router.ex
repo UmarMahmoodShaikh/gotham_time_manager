@@ -10,14 +10,29 @@ defmodule GothamTimeManagerWeb.Router do
   end
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
+
+  pipeline :auth_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug GothamTimeManagerWeb.Plugs.Auth
+  end
+
   scope "/api", GothamTimeManagerWeb do
+    # Public routes which can be accessed without authentication
     pipe_through :api
+    post "/login", UserController, :login
+#    resources "/users", UserController, only: [:create]
+  end
+
+  scope "/api", GothamTimeManagerWeb do
+    # Protected routes with authentication
+    pipe_through :auth_api
     resources "/users", UserController, except: []
     resources "/tasks", TaskController, except: [] do
-    get "/users/:user_id", TaskController, :by_user
+      get "/users/:user_id", TaskController, :by_user
     end
-     post "/login", UserController, :login
   end
 end
 

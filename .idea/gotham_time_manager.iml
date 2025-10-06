@@ -62,6 +62,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/bcrypt_elixir" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/comeonin" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jose" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/bcrypt_elixir" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/comeonin" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/elixir_make" />
@@ -158,5 +159,14 @@
     <orderEntry type="library" name="hpack" level="project" />
     <orderEntry type="library" name="bcrypt_elixir" level="project" />
     <orderEntry type="library" name="comeonin" level="project" />
+    <orderEntry type="library" name="jose" level="project" />
+    <orderEntry type="library" name="jsone" level="project" />
+    <orderEntry type="library" name="jsx" level="project" />
+    <orderEntry type="library" name="libdecaf" level="project" />
+    <orderEntry type="library" name="libsodium" level="project" />
+    <orderEntry type="library" name="ojson" level="project" />
+    <orderEntry type="library" name="poison" level="project" />
+    <orderEntry type="library" name="thoas" level="project" />
+    <orderEntry type="library" name="earmark" level="project" />
   </component>
 </module>

@@ -101,11 +101,19 @@ end
 defp do_login(conn, email, username, password) do
   case Accounts.authenticate_user(email, username, password) do
     {:ok, %User{id: id, email: email, role: role}} ->
-      json(conn, %{
+      jwt = sign_jwt(id)
+      xsrf = generate_xsrf()
+
+      conn
+      |> put_session(:xsrf_token, xsrf)
+      |> put_resp_cookie("XSRF-TOKEN", xsrf, http_only: false, same_site: "Lax")
+      |> json(%{
         status: "ok",
         user_id: id,
         email: email,
-        role: role
+        role: role,
+        token: jwt,
+        xsrf_token: xsrf
       })
 
     {:error, :unauthorized} ->
@@ -113,5 +121,19 @@ defp do_login(conn, email, username, password) do
       |> put_status(:unauthorized)
       |> json(%{error: "Invalid credentials"})
   end
+end
+
+defp sign_jwt(user_id) do
+  now = DateTime.utc_now() |> DateTime.to_unix()
+  exp = now + 60 * 60 * 24 # 24h
+  secret = Application.fetch_env!(:gotham_time_manager, :jwt_secret)
+  claims = %{"sub" => to_string(user_id), "iat" => now, "exp" => exp}
+  jwk = JOSE.JWK.from_oct(secret)
+  {_, token} = JOSE.JWT.sign(jwk, %{"alg" => "HS256"}, claims) |> JOSE.JWS.compact()
+  token
+end
+
+defp generate_xsrf do
+  :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false)
 end
 end

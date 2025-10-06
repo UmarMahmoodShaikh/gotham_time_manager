@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :gotham_time_manager, GothamTimeManager.Repo,
-  username: "mahpara",
-  password: "001995",
-  hostname: "localhost",
-  database: "gotham_time_manager_dev",
+  username: System.get_env("DB_USER_NAME"),
+  password: System.get_env("DB_PASSWORD"),
+  hostname: System.get_env("DB_HOST_NAME"),
+  database: System.get_env("DB_NAME"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
