@@ -23,6 +23,9 @@ defmodule GothamTimeManager.Accounts.User do
     user
     |> cast(attrs, [:first_name, :last_name, :email, :role, :password, :username])
     |> validate_required([:first_name, :email, :role, :password])
+    |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+    |> unique_constraint(:email)
+    |> unique_constraint(:username)
     |> put_hashed_password()
   end
 

@@ -52,3 +52,5 @@ Use protected endpoint:
     http://localhost:4000/api/users
 
 Note: Only POST /api/users (create) and POST /api/login are public. All other /api routes require JWT + XSRF.
+
+Implementation note: JWTs are now generated and verified with Joken (HS256) using the secret configured in config :gotham_time_manager, :jwt_secret.

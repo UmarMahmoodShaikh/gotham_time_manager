@@ -67,7 +67,7 @@ defmodule GothamTimeManager.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:bcrypt_elixir, "~> 3.0"},
-      {:jose, "~> 1.11"}
+      {:joken, "~> 2.6"}
     ]
   end
 

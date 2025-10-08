@@ -1,0 +1,35 @@
+# EditorConfig helps maintain consistent coding styles across editors and IDEs
+# For more info: https://editorconfig.org
+
+# Top-level EditorConfig file
+root = true
+
+# Default settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# ------------------------------
+# Elixir files (.ex, .exs)
+# ------------------------------
+[*.{ex,exs}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+quote_style = double
+
+# ------------------------------
+# JavaScript / TypeScript / Vue / CSS files
+# ------------------------------
+[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,css,scss,sass,less,styl}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# ------------------------------
+# Markdown files
+# ------------------------------
+[*.md]
+trim_trailing_whitespace = false

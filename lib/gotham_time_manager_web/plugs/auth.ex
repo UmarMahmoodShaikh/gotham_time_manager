@@ -39,11 +39,9 @@ defmodule GothamTimeManagerWeb.Plugs.Auth do
   end
 
   defp verify_jwt(token) do
-    secret = Application.fetch_env!(:gotham_time_manager, :jwt_secret)
-    jwk = JOSE.JWK.from_oct(secret)
-    case JOSE.JWT.verify_strict(jwk, ["HS256"], token) do
-      {true, %JOSE.JWT{fields: fields}, _} -> {:ok, Map.new(fields)}
-      _ -> {:error, :invalid}
+    case GothamTimeManager.Token.verify_token(token) do
+      {:ok, claims} when is_map(claims) -> {:ok, claims}
+      {:error, _} -> {:error, :invalid}
     end
   end
 

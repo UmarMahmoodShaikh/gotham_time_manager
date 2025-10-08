@@ -29,6 +29,8 @@ defmodule GothamTimeManagerWeb.Router do
   scope "/api", GothamTimeManagerWeb do
     # Protected routes with authentication
     pipe_through :auth_api
+    # Custom find endpoint allowing email/username params
+    get "/users/find", UserController, :show
     resources "/users", UserController, except: []
     resources "/tasks", TaskController, except: [] do
       get "/users/:user_id", TaskController, :by_user

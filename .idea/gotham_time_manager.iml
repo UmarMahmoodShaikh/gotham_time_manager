@@ -66,6 +66,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/bcrypt_elixir" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/comeonin" />
       <excludeFolder url="file://$MODULE_DIR$/_build/prod/lib/elixir_make" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/joken" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -168,5 +169,7 @@
     <orderEntry type="library" name="poison" level="project" />
     <orderEntry type="library" name="thoas" level="project" />
     <orderEntry type="library" name="earmark" level="project" />
+    <orderEntry type="library" name="joken" level="project" />
+    <orderEntry type="library" name="junit_formatter" level="project" />
   </component>
 </module>
