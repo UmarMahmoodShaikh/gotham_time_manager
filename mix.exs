@@ -1,9 +1,9 @@
-defmodule GothamTimeManager.MixProject do
+defmodule Gotham.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :gotham_time_manager,
+      app: :gotham,
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -20,7 +20,7 @@ defmodule GothamTimeManager.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {GothamTimeManager.Application, []},
+      mod: {Gotham.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -65,7 +65,11 @@ defmodule GothamTimeManager.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:bcrypt_elixir, "~> 3.1"},
+      {:joken, "~> 2.6"},
+      # <-- add this line
+      {:cors_plug, "~> 3.0"}
     ]
   end
 
@@ -82,10 +86,10 @@ defmodule GothamTimeManager.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["compile", "tailwind gotham_time_manager", "esbuild gotham_time_manager"],
+      "assets.build": ["compile", "tailwind gotham", "esbuild gotham"],
       "assets.deploy": [
-        "tailwind gotham_time_manager --minify",
-        "esbuild gotham_time_manager --minify",
+        "tailwind gotham --minify",
+        "esbuild gotham --minify",
         "phx.digest"
       ],
       precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"]

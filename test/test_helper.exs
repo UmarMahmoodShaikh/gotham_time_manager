@@ -1,2 +1,2 @@
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(GothamTimeManager.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Gotham.Repo, :manual)

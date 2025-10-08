@@ -1,0 +1,960 @@
+{
+	"info": {
+		"_postman_id": "your-collection-id",
+		"name": "Gotham API",
+		"description": "Complete API collection for Gotham application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"yourpassword\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/sign_up",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "sign_up"]
+						}
+					}
+				},
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"auth_token\", jsonData.meta.token);",
+									"pm.collectionVariables.set(\"csrf_token\", jsonData.meta.csrf_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"yourpassword\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/sign_in",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "sign_in"]
+						}
+					}
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/sign_out",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "sign_out"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users & Permissions",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/users",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/users/:id",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Roles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/roles",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "roles"]
+						}
+					}
+				},
+				{
+					"name": "Update User Permissions",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": [\"permission1\", \"permission2\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/permissions/:user_id",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "permissions", ":user_id"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Time Tracking",
+			"item": [
+				{
+					"name": "Get User Clock",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/clocks/:userID",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "clocks", ":userID"],
+							"variable": [
+								{
+									"key": "userID",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Clock In/Out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"in\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/clocks/:userID",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "clocks", ":userID"],
+							"variable": [
+								{
+									"key": "userID",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Working Times",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/workingtime/:userID",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "workingtime", ":userID"],
+							"variable": [
+								{
+									"key": "userID",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Log Unpaid Overtime",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"overtime\": {\n        \"hours\": 2,\n        \"date\": \"2025-10-07\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/logs/overtime/unpaid",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "logs", "overtime", "unpaid"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Schedules & Shifts",
+			"item": [
+				{
+					"name": "Get Employee Schedule Constraints",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/schedules/:employee_id/constraints",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "schedules", ":employee_id", "constraints"],
+							"variable": [
+								{
+									"key": "employee_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Batch Schedules",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schedules\": [\n        {\n            \"employee_id\": 1,\n            \"start_time\": \"2025-10-07T09:00:00Z\",\n            \"end_time\": \"2025-10-07T17:00:00Z\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/schedules/create_batch",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "schedules", "create_batch"]
+						}
+					}
+				},
+				{
+					"name": "Night Shift Alert",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/audit/night_shift_alert",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "audit", "night_shift_alert"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Tasks & Skills",
+			"item": [
+				{
+					"name": "List Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/tasks",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "tasks"]
+						}
+					}
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"task\": {\n        \"title\": \"New Task\",\n        \"description\": \"Task description\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/tasks",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "tasks"]
+						}
+					}
+				},
+				{
+					"name": "Update Task Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"completed\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/tasks/:taskid/status",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "tasks", ":taskid", "status"],
+							"variable": [
+								{
+									"key": "taskid",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Assign Task to User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assignment\": {\n        \"role\": \"developer\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/tasks/:taskid/user/:userid",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "tasks", ":taskid", "user", ":userid"],
+							"variable": [
+								{
+									"key": "taskid",
+									"value": "1"
+								},
+								{
+									"key": "userid",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Skills",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/skills",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "skills"]
+						}
+					}
+				},
+				{
+					"name": "Assign Skill to User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"level\": \"expert\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/users/:userid/skills/:skillid",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "users", ":userid", "skills", ":skillid"],
+							"variable": [
+								{
+									"key": "userid",
+									"value": "1"
+								},
+								{
+									"key": "skillid",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payroll & Audit",
+			"item": [
+				{
+					"name": "Get Calculation Rates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/payroll/calculation/rates",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "payroll", "calculation", "rates"]
+						}
+					}
+				},
+				{
+					"name": "Get Payroll Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/payroll/report/:id",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "payroll", "report", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Validate Timesheet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"approved\",\n    \"notes\": \"All hours verified\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/timesheets/:id/validate",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "timesheets", ":id", "validate"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Resolve Discrepancy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resolution\": {\n        \"type\": \"adjustment\",\n        \"hours\": 2,\n        \"notes\": \"System downtime compensation\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/audit/discrepancy/resolve",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "audit", "discrepancy", "resolve"]
+						}
+					}
+				},
+				{
+					"name": "Presence Verification",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/audit/presence_verification",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "audit", "presence_verification"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Integrations",
+			"item": [
+				{
+					"name": "Batsignal Integration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"signal\": {\n        \"type\": \"emergency\",\n        \"priority\": \"high\",\n        \"location\": \"Gotham City\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/integration/batsignal",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "integration", "batsignal"]
+						}
+					}
+				},
+				{
+					"name": "List Integrations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "x-xsrf-token",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/integrations",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["api", "integrations"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_token",
+			"value": ""
+		},
+		{
+			"key": "csrf_token",
+			"value": ""
+		}
+	]
+}
+

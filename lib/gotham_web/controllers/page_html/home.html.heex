@@ -1,0 +1,106 @@
+<Layouts.flash_group flash={@flash} />
+<div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem]">
+  <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+    <div class="text-center">
+      <img
+        src="https://images.unsplash.com/photo-1531259683007-016a9b2c4b38?w=400&h=400&fit=crop&crop=face&auto=format&q=80"
+        alt="Batman"
+        class="w-64 h-64 rounded-full object-cover shadow-2xl border-4 border-yellow-400 mx-auto mb-6"
+      />
+      <div class="text-yellow-400 text-6xl font-bold mb-2">🦇</div>
+      <h2 class="text-yellow-400 text-2xl font-bold">GOTHAM</h2>
+      <p class="text-gray-300 text-sm mt-2">The Dark Knight's City</p>
+    </div>
+  </div>
+</div>
+<div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
+  <div class="mx-auto max-w-xl lg:mx-0">
+    <div class="flex items-center mb-6">
+      <div class="text-6xl mr-4">🦇</div>
+      <div>
+        <h1 class="text-4xl font-bold text-yellow-400">
+          GOTHAM
+        </h1>
+        <p class="text-gray-400 text-sm">Workforce Management System</p>
+      </div>
+    </div>
+
+    <p class="text-[2rem] mt-4 font-semibold leading-10 tracking-tighter text-balance text-white">
+      Gotham City Time Tracking Application
+    </p>
+    <p class="mt-4 leading-7 text-gray-300">
+      Manage your workforce with the precision and efficiency of Gotham's finest. Track time, assign tasks, manage skills, and maintain order in your organization with our comprehensive workforce management system.
+    </p>
+    <div class="flex">
+      <div class="w-full sm:w-auto">
+        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
+          <a
+            href="/api/skills"
+            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6 bg-yellow-400 text-black hover:bg-yellow-300 transition-all duration-200"
+          >
+            <span class="relative flex items-center gap-4 sm:flex-col">
+              <div class="text-2xl">🦇</div>
+              <span>View Skills</span>
+            </span>
+          </a>
+          <a
+            href="/api/tasks"
+            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6 bg-gray-800 text-yellow-400 hover:bg-gray-700 transition-all duration-200 border border-yellow-400"
+          >
+            <span class="relative flex items-center gap-4 sm:flex-col">
+              <div class="text-2xl">⚡</div>
+              <span>Manage Tasks</span>
+            </span>
+          </a>
+          <a
+            href="/api/users"
+            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6 bg-gray-800 text-yellow-400 hover:bg-gray-700 transition-all duration-200 border border-yellow-400"
+          >
+            <span class="relative flex items-center gap-4 sm:flex-col">
+              <div class="text-2xl">👥</div>
+              <span>Team Members</span>
+            </span>
+          </a>
+        </div>
+        <div class="mt-10 grid grid-cols-1 gap-y-4 text-sm leading-6 text-gray-300 sm:grid-cols-2">
+          <div>
+            <a
+              href="/api/working_times"
+              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+            >
+              <div class="text-lg">⏰</div>
+              <span>Time Tracking</span>
+            </a>
+          </div>
+          <div>
+            <a
+              href="/api/schedules"
+              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+            >
+              <div class="text-lg">📅</div>
+              <span>Schedule Management</span>
+            </a>
+          </div>
+          <div>
+            <a
+              href="/api/teams"
+              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+            >
+              <div class="text-lg">🏢</div>
+              <span>Team Organization</span>
+            </a>
+          </div>
+          <div>
+            <a
+              href="/api/projects"
+              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+            >
+              <div class="text-lg">🎯</div>
+              <span>Project Management</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,14 +12,39 @@ import Config
 # If you use `mix release`, you need to explicitly enable the server
 # by passing the PHX_SERVER=true when you start it:
 #
-#     PHX_SERVER=true bin/gotham_time_manager start
+#     PHX_SERVER=true bin/gotham start
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
 if System.get_env("PHX_SERVER") do
-  config :gotham_time_manager, GothamTimeManagerWeb.Endpoint, server: true
+  config :gotham, GothamWeb.Endpoint, server: true
 end
 
+# The secret key base is used to sign/encrypt cookies and other secrets.
+secret_key_base =
+  System.get_env("SECRET_KEY_BASE") ||
+    case config_env() do
+      :test ->
+        "test_secret_key_base_long_enough_for_testing_only_this_should_be_at_least_64_characters_long_for_security_purposes_123456789"
+
+      :dev ->
+        "development_secret_key_base_long_enough_for_development_only_this_should_be_at_least_64_characters_long_for_security_purposes_123456789"
+
+      _ ->
+        raise "environment variable SECRET_KEY_BASE is missing. You can generate one by calling: mix phx.gen.secret"
+    end
+
+# Configure the endpoint for all environments
+config :gotham, GothamWeb.Endpoint, secret_key_base: secret_key_base
+
+# Configure Joken
+config :joken,
+  default_signer: [
+    signer_alg: "HS256",
+    key_octet: secret_key_base
+  ]
+
+# Production specific configuration
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
@@ -30,32 +55,23 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
-  config :gotham_time_manager, GothamTimeManager.Repo,
+  config :gotham, Gotham.Repo,
     # ssl: true,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     # For machines with several cores, consider starting multiple pools of `pool_size`
     # pool_count: 4,
-    socket_options: maybe_ipv6
-
-  # The secret key base is used to sign/encrypt cookies and other secrets.
-  # A default value is used in config/dev.exs and config/test.exs but you
-  # want to use a different value for prod and you most likely don't want
-  # to check this value into version control, so we use an environment
-  # variable instead.
-  secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
-      raise """
-      environment variable SECRET_KEY_BASE is missing.
-      You can generate one by calling: mix phx.gen.secret
-      """
+    socket_options: maybe_ipv6,
+    ssl: [
+      verify: :verify_none
+    ]
 
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
-  config :gotham_time_manager, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  config :gotham, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
-  config :gotham_time_manager, GothamTimeManagerWeb.Endpoint,
+  config :gotham, GothamWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -72,7 +88,7 @@ if config_env() == :prod do
   # To get SSL working, you will need to add the `https` key
   # to your endpoint configuration:
   #
-  #     config :gotham_time_manager, GothamTimeManagerWeb.Endpoint,
+  #     config :gotham, GothamWeb.Endpoint,
   #       https: [
   #         ...,
   #         port: 443,
@@ -94,7 +110,7 @@ if config_env() == :prod do
   # We also recommend setting `force_ssl` in your config/prod.exs,
   # ensuring no data is ever sent via http, always redirecting to https:
   #
-  #     config :gotham_time_manager, GothamTimeManagerWeb.Endpoint,
+  #     config :gotham, GothamWeb.Endpoint,
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
@@ -104,7 +120,7 @@ if config_env() == :prod do
   # In production you need to configure the mailer to use a different adapter.
   # Here is an example configuration for Mailgun:
   #
-  #     config :gotham_time_manager, GothamTimeManager.Mailer,
+  #     config :gotham, Gotham.Mailer,
   #       adapter: Swoosh.Adapters.Mailgun,
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")

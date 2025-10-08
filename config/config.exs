@@ -7,20 +7,20 @@
 # General application configuration
 import Config
 
-config :gotham_time_manager,
-  ecto_repos: [GothamTimeManager.Repo],
+config :gotham,
+  ecto_repos: [Gotham.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
-config :gotham_time_manager, GothamTimeManagerWeb.Endpoint,
+config :gotham, GothamWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: GothamTimeManagerWeb.ErrorHTML, json: GothamTimeManagerWeb.ErrorJSON],
+    formats: [html: GothamWeb.ErrorHTML, json: GothamWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: GothamTimeManager.PubSub,
-  live_view: [signing_salt: "eTbYeZyz"]
+  pubsub_server: Gotham.PubSub,
+  live_view: [signing_salt: "eY2Af4Qo"]
 
 # Configures the mailer
 #
@@ -29,12 +29,12 @@ config :gotham_time_manager, GothamTimeManagerWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :gotham_time_manager, GothamTimeManager.Mailer, adapter: Swoosh.Adapters.Local
+config :gotham, Gotham.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
-  gotham_time_manager: [
+  gotham: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
     cd: Path.expand("../assets", __DIR__),
@@ -44,7 +44,7 @@ config :esbuild,
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "4.1.7",
-  gotham_time_manager: [
+  gotham: [
     args: ~w(
       --input=assets/css/app.css
       --output=priv/static/assets/css/app.css

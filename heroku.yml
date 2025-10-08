@@ -1,0 +1,22 @@
+# Heroku Container Stack manifest for Phoenix (Elixir) app
+setup:
+  addons:
+    - plan: heroku-postgresql:mini
+      as: DATABASE
+
+# Build the Docker image
+build:
+  docker:
+    web: Dockerfile
+
+# Release phase: run database migrations
+# The command should be defined in your Dockerfile as CMD or ENTRYPOINT
+release:
+  image: web
+  command:
+    - /app/bin/gotham
+    - eval
+    - "Gotham.Release.migrate"
+
+run:
+  web: ./entrypoint.sh

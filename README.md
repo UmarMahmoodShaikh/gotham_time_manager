@@ -1,4 +1,4 @@
-# GothamTimeManager
+# Gotham
 
 To start your Phoenix server:
 
