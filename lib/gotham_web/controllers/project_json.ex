@@ -6,11 +6,10 @@ defmodule GothamWeb.ProjectJSON do
 
   defp data(%Project{} = project) do
     %{
-      id: project.id,
       name: project.name,
       description: project.description,
       status: project.status,
-      team_ids: Enum.map(project.teams || [], & &1.id),
+      team_ids: Enum.map(project.teams || [], & &1.name),
       task_ids: Enum.map(project.tasks || [], & &1.id)
     }
   end

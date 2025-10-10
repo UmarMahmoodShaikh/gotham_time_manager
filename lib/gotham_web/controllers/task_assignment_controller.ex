@@ -1,56 +1,115 @@
 defmodule GothamWeb.TaskAssignmentController do
   use GothamWeb, :controller
 
+  alias Gotham.Accounts.Role
   alias Gotham.Activities
+  alias Gotham.Projects
+  alias Gotham.Repo
   alias Gotham.Activities.TaskAssignment
 
   action_fallback GothamWeb.FallbackController
 
   # Router exposes paramized endpoints:
-  #   post "/tasks/:taskid/user/:userid", TaskAssignmentController, :create
-  #   delete "/tasks/:taskid/user/:userid", TaskAssignmentController, :delete
+  #   post "/tasks/:task_id/user/:user_id", TaskAssignmentController, :create
+  #   delete "/tasks/:task_id/user/:user_id", TaskAssignmentController, :delete
   # Return 501 for now.
 
-  def create(conn, %{"taskid" => task_id, "userid" => user_id}) do
-    alias Gotham.Accounts.Role
+#  def create(conn, %{"task_id" => task_id, "user_id" => user_id}) do
+#    alias Gotham.Accounts.Role
+#    current_user = conn.assigns[:current_user]
+#
+#    # Check if current user is admin or manager
+#    if current_user && current_user.role_id in [Role.admin_id(), Role.manager_id()] do
+#      # Verify that both task and user exist
+#      with {:ok, _task} <- verify_task_exists(task_id),
+#           {:ok, _user} <- verify_user_exists(user_id),
+#           {:ok, task_assignment} <-
+#             Activities.create_task_assignment(%{task_id: task_id, user_id: user_id}) do
+#        conn
+#        |> put_status(:created)
+#        |> put_resp_header("location", ~p"/api/task_assignments/#{task_assignment}")
+#        |> render(:show, task_assignment: task_assignment)
+#      else
+#        {:error, :not_found} ->
+#          conn
+#          |> put_status(:not_found)
+#          |> json(%{errors: [%{status: "404", title: "Task or User not found"}]})
+#
+#        {:error, changeset} ->
+#          conn
+#          |> put_status(:unprocessable_entity)
+#          |> json(%{
+#            errors: [%{status: "422", title: "Validation failed", detail: changeset.errors}]
+#          })
+#      end
+#    else
+#      conn
+#      |> put_status(:forbidden)
+#      |> json(%{
+#        errors: [
+#          %{
+#            status: "403",
+#            title: "Forbidden",
+#            detail: "Only admins and managers can assign tasks"
+#          }
+#        ]
+#      })
+#    end
+#  end
+  # POST /tasks/:taskid/user/:userid
+  def create(conn, params) do
     current_user = conn.assigns[:current_user]
 
-    # Check if current user is admin or manager
     if current_user && current_user.role_id in [Role.admin_id(), Role.manager_id()] do
-      # Verify that both task and user exist
-      with {:ok, _task} <- verify_task_exists(task_id),
-           {:ok, _user} <- verify_user_exists(user_id),
-           {:ok, task_assignment} <-
-             Activities.create_task_assignment(%{task_id: task_id, user_id: user_id}) do
+      with {:ok, task_id} <- fetch_and_cast_id(params, "taskid"),
+           {:ok, user_id} <- fetch_and_cast_id(params, "userid"),
+           {:ok, project_id} <- fetch_and_cast_id(params, "project_id"),
+           {:ok, _task} <- Activities.get_task(task_id),
+           {:ok, _user} <- Gotham.Accounts.get_user(user_id),
+           {:ok, _project} <- Projects.get_project(project_id),
+           {:ok, task_assignment} <- Activities.create_task_assignment(%{task_id: task_id, user_id: user_id}),
+           {:ok, _project_task} <- Activities.create_project_task(%{project_id: project_id, task_id: task_id}) do
         conn
         |> put_status(:created)
         |> put_resp_header("location", ~p"/api/task_assignments/#{task_assignment}")
         |> render(:show, task_assignment: task_assignment)
       else
+        {:error, :missing_param, param} ->
+          conn
+          |> put_status(:bad_request)
+          |> json(%{errors: [%{status: "400", title: "Missing parameter", detail: "Required param #{param} is missing"}]})
+
+        {:error, :invalid_param, param} ->
+          conn
+          |> put_status(:bad_request)
+          |> json(%{errors: [%{status: "400", title: "Invalid parameter", detail: "#{param} must be an integer"}]})
+
         {:error, :not_found} ->
           conn
           |> put_status(:not_found)
-          |> json(%{errors: [%{status: "404", title: "Task or User not found"}]})
+          |> json(%{errors: [%{status: "404", title: "Task, User, or Project not found"}]})
 
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
-          |> json(%{
-            errors: [%{status: "422", title: "Validation failed", detail: changeset.errors}]
-          })
+          |> json(%{errors: [%{status: "422", title: "Validation failed", detail: changeset.errors}]})
       end
     else
       conn
       |> put_status(:forbidden)
-      |> json(%{
-        errors: [
-          %{
-            status: "403",
-            title: "Forbidden",
-            detail: "Only admins and managers can assign tasks"
-          }
-        ]
-      })
+      |> json(%{errors: [%{status: "403", title: "Forbidden", detail: "Only admins and managers can assign tasks"}]})
+    end
+  end
+
+  # Helper: fetch param and cast to integer
+  defp fetch_and_cast_id(params, key) do
+    case Map.get(params, key) do
+      nil -> {:error, :missing_param, key}
+      value ->
+        case Integer.parse(to_string(value)) do
+          {int, ""} -> {:ok, int}
+          _ -> {:error, :invalid_param, key}
+        end
     end
   end
 
@@ -64,7 +123,7 @@ defmodule GothamWeb.TaskAssignmentController do
     end
   end
 
-  def delete(conn, %{"taskid" => task_id, "userid" => user_id}) do
+  def delete(conn, %{"task_id" => task_id, "user_id" => user_id}) do
     alias Gotham.Accounts.Role
     current_user = conn.assigns[:current_user]
 
@@ -136,4 +195,12 @@ defmodule GothamWeb.TaskAssignmentController do
   defp verify_user_exists(user_id) do
     Gotham.Accounts.get_user(user_id)
   end
+
+  defp verify_project_exists(project_id) do
+    case Gotham.Repo.get(Gotham.Projects.Project, project_id) do
+      nil -> {:error, :not_found}
+      project -> {:ok, project}
+    end
+  end
+
 end

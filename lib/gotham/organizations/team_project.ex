@@ -2,11 +2,9 @@ defmodule Gotham.Organizations.TeamProject do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Gotham.Organizations.{Team, Project}
-
   schema "teams_projects" do
-    belongs_to :team, Team, type: :id
-    belongs_to :project, Project, type: :id
+    belongs_to :team, Gotham.Organizations.Team, type: :id
+    belongs_to :project, Gotham.Organizations.Project, type: :id
 
     timestamps(type: :utc_datetime)
   end

@@ -17,9 +17,7 @@ defmodule GothamWeb.ScheduleJSON do
 
   defp data(%Schedule{} = schedule) do
     %{
-      id: schedule.id,
-      start_date: schedule.start_date,
-      end_date: schedule.end_date,
+      start_date: schedule.date,
       consecutive_night_count: schedule.consecutive_night_count
     }
   end

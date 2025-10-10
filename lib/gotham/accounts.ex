@@ -4,9 +4,9 @@ defmodule Gotham.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Gotham.Accounts.User
   alias Gotham.Repo
-
+  alias Gotham.Accounts.User
+  alias Gotham.Accounts.Permission
   alias Gotham.Accounts.{User, Role, Permission}
 
   # ------------------------
@@ -182,9 +182,6 @@ defmodule Gotham.Accounts do
         end
     end
   end
-
-  alias Gotham.Repo
-  alias Gotham.Accounts.Permission
 
   #  def update_permission_for_user(manager_id, managed_user_id, attrs) do
   #    case Repo.get_by(Permission, manager_id: manager_id, managed_user_id: managed_user_id) do

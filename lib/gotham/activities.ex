@@ -5,6 +5,7 @@ defmodule Gotham.Activities do
 
   import Ecto.Query, warn: false
   alias Gotham.Repo
+  alias Gotham.Organizations.ProjectTask
 
   alias Gotham.Activities.{Task, Skill, TaskAssignment, TaskSkill, UserSkill, UnrecognizedWork}
 
@@ -173,4 +174,10 @@ defmodule Gotham.Activities do
 
   def change_unrecognized_work(%UnrecognizedWork{} = unrecognized_work, attrs \\ %{}),
     do: UnrecognizedWork.changeset(unrecognized_work, attrs)
+
+  def create_project_task(attrs) do
+    %ProjectTask{}
+    |> ProjectTask.changeset(attrs)
+    |> Repo.insert()
+  end
 end

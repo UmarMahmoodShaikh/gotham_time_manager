@@ -17,10 +17,11 @@ defmodule GothamWeb.ShiftJSON do
 
   defp data(%Shift{} = shift) do
     %{
-      id: shift.id,
       name: shift.name,
       is_night_shift: shift.is_night_shift,
-      is_constraint_hour: shift.is_constraint_hour
+      is_constraint_hour: shift.is_constraint_hour,
+      start_time: shift.start_time,
+      end_time: shift.end_time
     }
   end
 end

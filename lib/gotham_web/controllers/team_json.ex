@@ -10,7 +10,10 @@ defmodule GothamWeb.TeamJSON do
       name: team.name,
       status: team.status,
       manager_id: team.manager_id,
-      project_ids: Enum.map(team.projects || [], & &1.id)
+      project_ids: get_project_ids(team.projects)
     }
   end
+
+  defp get_project_ids(%Ecto.Association.NotLoaded{}), do: []
+  defp get_project_ids(projects) when is_list(projects), do: Enum.map(projects, & &1.id)
 end

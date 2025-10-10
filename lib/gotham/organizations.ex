@@ -61,10 +61,45 @@ defmodule Gotham.Organizations do
   def list_projects, do: Repo.all(Project) |> Repo.preload([:teams, :tasks])
   def get_project!(id), do: Repo.get!(Project, id) |> Repo.preload([:teams, :tasks])
 
+  def get_team_id_by_manager(manager_id) do
+    query =
+      from(t in Team,
+        where: t.manager_id == ^manager_id,
+        select: t.id
+      )
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      team_id -> {:ok, team_id}
+    end
+  end
+
   def create_project(attrs) do
-    %Project{}
-    |> Project.changeset(attrs)
-    |> Repo.insert()
+    {manager_id, project_attrs} =
+      Map.pop(attrs, "manager_id") || Map.pop(attrs, :manager_id)
+
+    Repo.transaction(fn ->
+      case %Project{} |> Project.changeset(project_attrs) |> Repo.insert() do
+        {:ok, project} ->
+          if manager_id do
+            # Unwrap the result here
+            case Gotham.Organizations.get_team_id_by_manager(manager_id) do
+              {:ok, team_id} ->
+                %TeamProject{}
+                |> TeamProject.changeset(%{team_id: team_id, project_id: project.id})
+                |> Repo.insert!()
+
+              {:error, :not_found} ->
+                Repo.rollback("Manager does not have a team")
+            end
+          end
+
+          project
+
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end)
   end
 
   def update_project(%Project{} = project, attrs) do
@@ -79,7 +114,7 @@ defmodule Gotham.Organizations do
   def add_project_to_team(team_id, project_id) do
     %TeamProject{}
     |> TeamProject.changeset(%{team_id: team_id, project_id: project_id})
-    |> Repo.insert(on_conflict: :nothing)
+    |> Repo.insert!()
   end
 
   def remove_project_from_team(team_id, project_id) do

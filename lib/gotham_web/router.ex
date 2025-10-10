@@ -76,7 +76,7 @@ defmodule GothamWeb.Router do
     resources "/schedules", ScheduleController, except: [:new, :edit]
 
     # Shifts
-    resources "/shifts", ShiftController, except: [:new, :edit]
+    resources "/shifts", ShiftController, except: [:new, :edit, :delete]
 
     # Leaves
     resources "/leaves", LeaveController, except: [:new, :edit]

@@ -56,15 +56,16 @@ defmodule Gotham.Scheduling do
   def constraints_for_employee(employee_id) do
     query =
       from s in Schedule,
-        where: s.user_id == ^employee_id,
-        join: sh in assoc(s, :shift),
-        where: sh.is_constraint_hour == true,
-        select: %{
-          schedule_id: s.id,
-          start_date: s.start_date,
-          end_date: s.end_date,
-          shift_id: s.shift_id
-        }
+           where: s.user_id == ^employee_id,
+           join: sh in assoc(s, :shift),
+           where: sh.is_constraint_hour == true,
+           select: %{
+             schedule_id: s.id,
+             start_date: s.date,
+             shift_name: sh.name,
+             start_time: sh.start_time,
+             end_time: sh.end_time
+           }
 
     Repo.all(query)
   end

@@ -5,8 +5,7 @@ defmodule Gotham.Scheduling.Schedule do
   alias Gotham.Accounts.User
 
   schema "schedules" do
-    field :start_date, :date
-    field :end_date, :date
+    field :date, :date
     field :consecutive_night_count, :integer
     field :user_id, :id
     field :shift_id, :id
@@ -20,8 +19,8 @@ defmodule Gotham.Scheduling.Schedule do
   @doc false
   def changeset(schedule, attrs) do
     schedule
-    |> cast(attrs, [:start_date, :end_date, :consecutive_night_count, :user_id, :shift_id])
-    |> validate_required([:start_date, :end_date, :user_id])
+    |> cast(attrs, [:date, :consecutive_night_count, :user_id, :shift_id])
+    |> validate_required([:date, :user_id])
     |> assoc_constraint(:shift)
     |> assoc_constraint(:user)
   end
