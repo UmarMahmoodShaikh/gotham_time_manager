@@ -64,13 +64,38 @@ defmodule GothamWeb.UserController do
     end
   end
 
+#  def create(conn, %{"user" => user_params}) do
+#    with {:ok, %User{} = user} <- Accounts.create_gotham_user(user_params) do
+#      conn
+#      |> put_status(:created)
+#      |> put_resp_header("location", ~p"/api/users/#{user}")
+#      |> render(:show, user: user)
+#    end
+#  end
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+    # Extract first_name and last_name (handle both atom/string keys)
+    first_name = Map.get(user_params, :first_name) || Map.get(user_params, "first_name")
+    last_name = Map.get(user_params, :last_name) || Map.get(user_params, "last_name")
+
+    # Early validation
+    if is_nil(first_name) or is_nil(last_name) do
       conn
-      |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/users/#{user}")
-      |> render(:show, user: user)
+      |> put_status(:bad_request)
+      |> json(%{error: "first_name and last_name are required"})
+    else
+      # Proceed if both exist
+      with {:ok, %User{} = user} <- Accounts.create_gotham_user(user_params) do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", ~p"/api/users/#{user}")
+        |> render(:show, user: user)
+      end
     end
+  end
+
+  # Fallback to accept unwrapped payloads by wrapping them under "user"
+  def create(conn, params) when is_map(params) do
+    create(conn, %{"user" => params})
   end
 
   def show(conn, %{"id" => id}) do
@@ -90,8 +115,8 @@ defmodule GothamWeb.UserController do
   def delete(conn, %{"id" => id}) do
     authorize_delete!(conn)
 
-    with {:ok, user} <- Accounts.get_user(id),
-         {:ok, %User{}} <- Accounts.delete_user(user) do
+    with {:ok, %User{} = user} <- Accounts.get_user(id),
+         {:ok, %User{}} <- Accounts.in_active_user(user, %{is_active: false}) do
       send_resp(conn, :no_content, "")
     end
   end
@@ -128,4 +153,38 @@ defmodule GothamWeb.UserController do
     |> json(%{errors: [%{detail: "forbidden"}]})
     |> halt()
   end
+
+  def update_role(conn, %{"user" => user_params}) do
+    current_user = conn.assigns[:current_user]
+
+    if current_user && current_user.role_id in [Gotham.Accounts.Role.admin_id(), Gotham.Accounts.Role.hr_id()] do
+      user_to_update = Map.get(user_params, :user_id) || Map.get(user_params, "user_id")
+      role_to_update = Map.get(user_params, :role_id) || Map.get(user_params, "role_id")
+
+      user = Accounts.get_user!(user_to_update)
+
+      case Accounts.update_user(user, %{role_id: role_to_update}) do
+        {:ok, %User{} = updated_user} ->
+          render(conn, "show.json", user: updated_user)
+
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> json(%{errors: [%{detail: "Failed to update role", changes: changeset_errors(changeset)}]})
+      end
+    else
+      conn
+      |> put_status(:forbidden)
+      |> json(%{errors: [%{detail: "Sorry, you are not authorized to perform this action."}]})
+    end
+  end
+
+  defp changeset_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
+  end
+
 end

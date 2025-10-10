@@ -33,6 +33,64 @@ defmodule Gotham.Accounts do
     |> Repo.insert()
   end
 
+  def create_gotham_user(attrs) do
+    first_name = Map.get(attrs, :first_name) || Map.get(attrs, "first_name")
+    last_name = Map.get(attrs, :last_name) || Map.get(attrs, "last_name")
+
+    generated_email =
+      case {first_name, last_name} do
+        {f, l} when is_binary(f) and is_binary(l) ->
+          base = String.downcase(String.replace(f, ~r/\s+/, "")) <> "." <>
+                                                                    String.downcase(String.replace(l, ~r/\s+/, ""))
+          base <> "@gotham.com"
+
+        _ ->
+          nil
+      end
+
+    generated_password =
+      :rand.uniform(900_000)
+      |> Kernel.+(99_999)
+      |> Integer.to_string()
+
+    attrs =
+      attrs
+      |> stringify_keys()
+      |> Map.put_new("email", generated_email)
+      |> Map.put_new("password", generated_password)
+
+    changeset = User.changeset(%User{}, attrs)
+
+    case Repo.insert(changeset) do
+      {:ok, %User{} = user} ->
+        # Fire-and-forget onboarding email with logging
+        Task.start(fn ->
+          email = Gotham.UserEmail.onboard_user(user, generated_password)
+          case Gotham.Mailer.deliver(email) do
+            {:ok, resp} ->
+              require Logger
+              Logger.info("Onboarding email sent: #{inspect(resp)}")
+
+            {:error, reason} ->
+              require Logger
+              Logger.error("Onboarding email failed: #{inspect(reason)}")
+          end
+        end)
+
+        {:ok, user}
+
+      other ->
+        other
+    end
+  end
+
+  defp stringify_keys(map) when is_map(map) do
+    Enum.into(map, %{}, fn
+      {k, v} when is_atom(k) -> {Atom.to_string(k), v}
+      {k, v} -> {k, v}
+    end)
+  end
+
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
@@ -40,6 +98,16 @@ defmodule Gotham.Accounts do
   end
 
   def delete_user(%User{} = user), do: Repo.delete(user)
+#  def in_active_user(%User{} = user, attrs \\ %{}), do: User.changeset(user, attrs)
+#  @spec in_active_user(
+#          %Gotham.Accounts.User{optional(atom()) => any()},
+#          :invalid | %{optional(:__struct__) => none(), optional(atom() | binary()) => any()}
+#        ) :: any()
+  def in_active_user(%User{} = user, attrs \\ %{}) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
   def change_user(%User{} = user, attrs \\ %{}), do: User.changeset(user, attrs)
 
   # ------------------------

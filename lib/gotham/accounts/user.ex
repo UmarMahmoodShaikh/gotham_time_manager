@@ -6,11 +6,14 @@ defmodule Gotham.Accounts.User do
   schema "users" do
     field :username, :string
     field :email, :string
+    field :personal_email, :string
+    field :phone, :string
     field :first_name, :string
     field :last_name, :string
     field :password_hash, :string
     field :password, :string, virtual: true
     field :is_visually_challenged, :boolean, default: false
+    field :is_active, :boolean, default: true
 
     belongs_to :role, Gotham.Accounts.Role
     timestamps(type: :utc_datetime)
@@ -20,15 +23,18 @@ defmodule Gotham.Accounts.User do
     user
     |> cast(attrs, [
       :email,
+      :personal_email,
+      :phone,
       :password,
       :username,
       :first_name,
       :last_name,
       :is_visually_challenged,
+      :is_active,
       :role_id
     ])
-    |> validate_required([:email, :password])
-    |> validate_format(:email, ~r/@/)
+    |> validate_required([:personal_email, :first_name, :last_name])
+    |> validate_format(:personal_email, ~r/@/)
     |> validate_length(:password, min: 6)
     |> default_role_id()
     |> put_password_hash()

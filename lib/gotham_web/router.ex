@@ -43,7 +43,8 @@ defmodule GothamWeb.Router do
     pipe_through [:api, :auth]
 
     # Users
-    resources "/users", UserController, except: [:new, :edit]
+    resources "/users", UserController, except: []
+    put "/users/:id/role", UserController, :update_role
     resources "/roles", RoleController, only: [:index, :show]
     put "/permissions/:user_id", PermissionController, :update
     delete "/permissions/:user_id", PermissionController, :delete
@@ -124,5 +125,16 @@ defmodule GothamWeb.Router do
     delete "/tasks/:taskid/user/:userid", TaskAssignmentController, :delete
     resources "/task_assignments", TaskAssignmentController, except: [:new, :edit]
     resources "/compensation_logs", CompensationLogController, except: [:new, :edit]
+  end
+
+  # Dev-only routes (dashboard, mailbox)
+  if Application.compile_env(:gotham, :dev_routes) do
+    import Phoenix.LiveDashboard.Router
+
+    scope "/dev" do
+      pipe_through :browser
+      live_dashboard "/dashboard", metrics: GothamWeb.Telemetry
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
   end
 end

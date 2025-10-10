@@ -1,6 +1,8 @@
 defmodule GothamWeb.AuthController do
   use GothamWeb, :controller
   alias Gotham.Accounts
+  alias Gotham.Accounts.Role
+  alias Gotham.Repo
 
   @jsonapi "application/vnd.api+json"
 
@@ -8,6 +10,7 @@ defmodule GothamWeb.AuthController do
     with %{
            "email" => email,
            "password" => password,
+           "personal_email" => personal_email,
            "username" => username,
            "first_name" => first_name,
            "last_name" => last_name,
@@ -17,6 +20,7 @@ defmodule GothamWeb.AuthController do
            Accounts.create_user(%{
              email: email,
              password: password,
+             personal_email: personal_email,
              username: username,
              first_name: first_name,
              last_name: last_name,
@@ -35,7 +39,9 @@ defmodule GothamWeb.AuthController do
             username: user.username,
             first_name: user.first_name,
             last_name: user.last_name,
-            is_visually_challenged: user.is_visually_challenged
+            is_visually_challenged: user.is_visually_challenged,
+            role_id: user.role_id,
+            role: Repo.get(Role, user.role_id).label
           }
         },
         meta: %{token: token}

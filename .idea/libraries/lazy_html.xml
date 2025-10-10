@@ -5,8 +5,6 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/deps/lazy_html/lib" />
       <root url="file://$PROJECT_DIR$/deps/lazy_html/c_src" />
-      <root url="file://$PROJECT_DIR$/deps/lazy_html/lib" />
-      <root url="file://$PROJECT_DIR$/deps/lazy_html/c_src" />
     </SOURCES>
   </library>
 </component>

@@ -86,5 +86,24 @@ config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
-# Disable swoosh api client as it is only required for production adapters.
+smtp_server = System.get_env("SMTP_SERVER")
+
+if smtp_server do
+  # Use SMTP in development when env vars are present
+  config :gotham, Gotham.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    relay: smtp_server,
+    username: System.get_env("SMTP_USERNAME"),
+    password: System.get_env("SMTP_PASSWORD"),
+    port: String.to_integer(System.get_env("SMTP_PORT") || "587"),
+    ssl: false,
+    tls: :always,
+    auth: :always,
+    retries: 2
+else
+  # Fall back to local mailbox preview to avoid crashes when env vars are missing
+  config :gotham, Gotham.Mailer, adapter: Swoosh.Adapters.Local
+end
+
+# SMTP adapters don't require the API client; leaving false is safe in dev
 config :swoosh, :api_client, false

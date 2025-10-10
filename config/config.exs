@@ -29,7 +29,11 @@ config :gotham, GothamWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
+# Configure Swoosh as the mailer in dev/test by default; override in runtime.exs for prod
 config :gotham, Gotham.Mailer, adapter: Swoosh.Adapters.Local
+
+# Swoosh API client for non-SMTP adapters
+config :swoosh, :api_client, Swoosh.ApiClient.Req
 
 # Configure esbuild (the version is required)
 config :esbuild,

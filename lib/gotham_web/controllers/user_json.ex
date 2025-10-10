@@ -20,7 +20,9 @@ defmodule GothamWeb.UserJSON do
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role.label,
+      role:
+        (Ecto.assoc_loaded?(user.role) and user.role && user.role.label) ||
+          nil,
       first_name: user.first_name,
       last_name: user.last_name,
       is_visually_challenged: user.is_visually_challenged

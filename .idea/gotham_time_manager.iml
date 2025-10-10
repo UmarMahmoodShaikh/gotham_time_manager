@@ -59,6 +59,16 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/bcrypt_elixir" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/comeonin" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/cors_plug" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/gen_smtp" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/idna" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/joken" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jose" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ranch" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/unicode_util_compat" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -150,5 +160,44 @@
     <orderEntry type="library" name="x509" level="project" />
     <orderEntry type="library" name="mimic" level="project" />
     <orderEntry type="library" name="hpack" level="project" />
+    <orderEntry type="library" name="bcrypt_elixir" level="project" />
+    <orderEntry type="library" name="joken" level="project" />
+    <orderEntry type="library" name="cors_plug" level="project" />
+    <orderEntry type="library" name="comeonin" level="project" />
+    <orderEntry type="library" name="jose" level="project" />
+    <orderEntry type="library" name="junit_formatter" level="project" />
+    <orderEntry type="library" name="jsone" level="project" />
+    <orderEntry type="library" name="jsx" level="project" />
+    <orderEntry type="library" name="libdecaf" level="project" />
+    <orderEntry type="library" name="libsodium" level="project" />
+    <orderEntry type="library" name="ojson" level="project" />
+    <orderEntry type="library" name="poison" level="project" />
+    <orderEntry type="library" name="thoas" level="project" />
+    <orderEntry type="library" name="earmark" level="project" />
+    <orderEntry type="library" name="bamboo" level="project" />
+    <orderEntry type="library" name="bamboo_smtp" level="project" />
+    <orderEntry type="library" name="idna" level="project" />
+    <orderEntry type="library" name="phoenix" level="project" />
+    <orderEntry type="library" name="phoenix_ecto" level="project" />
+    <orderEntry type="library" name="ecto_sql" level="project" />
+    <orderEntry type="library" name="postgrex" level="project" />
+    <orderEntry type="library" name="phoenix_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_reload" level="project" />
+    <orderEntry type="library" name="phoenix_live_view" level="project" />
+    <orderEntry type="library" name="lazy_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_dashboard" level="project" />
+    <orderEntry type="library" name="esbuild" level="project" />
+    <orderEntry type="library" name="tailwind" level="project" />
+    <orderEntry type="library" name="swoosh" level="project" />
+    <orderEntry type="library" name="req" level="project" />
+    <orderEntry type="library" name="telemetry_metrics" level="project" />
+    <orderEntry type="library" name="telemetry_poller" level="project" />
+    <orderEntry type="library" name="gettext" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="dns_cluster" level="project" />
+    <orderEntry type="library" name="bandit" level="project" />
+    <orderEntry type="library" name="bcrypt_elixir" level="project" />
+    <orderEntry type="library" name="joken" level="project" />
+    <orderEntry type="library" name="cors_plug" level="project" />
   </component>
 </module>

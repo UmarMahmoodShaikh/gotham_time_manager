@@ -4,7 +4,6 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/deps/fine/lib" />
-      <root url="file://$PROJECT_DIR$/deps/fine/lib" />
     </SOURCES>
   </library>
 </component>
