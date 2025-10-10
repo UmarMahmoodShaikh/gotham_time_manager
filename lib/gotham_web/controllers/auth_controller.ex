@@ -87,7 +87,9 @@ defmodule GothamWeb.AuthController do
               username: user.username,
               first_name: user.first_name,
               last_name: user.last_name,
-              is_visually_challenged: user.is_visually_challenged
+              is_visually_challenged: user.is_visually_challenged,
+              role_id: user.role_id,
+              role: Repo.get(Role, user.role_id).label
             }
           },
           meta: %{
