@@ -70,7 +70,9 @@ defmodule Gotham.MixProject do
       {:bcrypt_elixir, "~> 3.1"},
       {:joken, "~> 2.6"},
       # <-- add this line
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:castore, "~> 1.0"},
+      {:ssl_verify_fun, "~> 1.1"}
     ]
   end
 

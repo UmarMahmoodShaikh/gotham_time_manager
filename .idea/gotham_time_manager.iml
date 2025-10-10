@@ -60,6 +60,7 @@
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/bcrypt_elixir" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/castore" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/comeonin" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/cors_plug" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
@@ -68,6 +69,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/joken" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jose" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ranch" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ssl_verify_fun" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/unicode_util_compat" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -199,5 +201,6 @@
     <orderEntry type="library" name="bcrypt_elixir" level="project" />
     <orderEntry type="library" name="joken" level="project" />
     <orderEntry type="library" name="cors_plug" level="project" />
+    <orderEntry type="library" name="ssl_verify_fun" level="project" />
   </component>
 </module>

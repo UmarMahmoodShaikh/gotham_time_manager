@@ -72,6 +72,7 @@ defmodule GothamWeb.UserController do
 #      |> render(:show, user: user)
 #    end
 #  end
+
   def create(conn, %{"user" => user_params}) do
     # Extract first_name and last_name (handle both atom/string keys)
     first_name = Map.get(user_params, :first_name) || Map.get(user_params, "first_name")
