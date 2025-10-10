@@ -124,11 +124,12 @@ if config_env() == :prod do
     username: System.get_env("SMTP_USERNAME"),
     password: System.get_env("SMTP_PASSWORD"),
     port: String.to_integer(System.get_env("SMTP_PORT") || "587"),
-    ssl: [
-      verify: :verify_peer,
-      cacerts: :public_key.cacerts_get(),
-      verify_fun: {&:ssl_verify_hostname.verify_fun/3, check_hostname: true}
-    ],
+    ssl: false,
+#    ssl: [
+#      verify: :verify_peer,
+#      cacerts: :public_key.cacerts_get(),
+#      verify_fun: {&:ssl_verify_hostname.verify_fun/3, check_hostname: true}
+#    ],
     tls: :if_available,
     auth: :always,
     retries: 2
