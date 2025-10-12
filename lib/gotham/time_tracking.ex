@@ -6,7 +6,7 @@ defmodule Gotham.TimeTracking do
   import Ecto.Query, warn: false
   alias Gotham.Repo
 
-  alias Gotham.TimeTracking.{Clock, WorkingTime}
+  alias Gotham.TimeTracking.{Clock, WorkingTime, TimeEntry}
 
   # ------------------------
   # Clock Functions
@@ -366,4 +366,281 @@ defmodule Gotham.TimeTracking do
 
     ticks
   end
+
+  # ------------------------
+  # TimeEntry Functions
+  # ------------------------
+
+  @doc """
+  Returns the list of time_entries for a user with filters and pagination.
+  """
+  def list_time_entries(%{user_id: user_id} = filters) do
+    query = from(t in TimeEntry, where: t.user_id == ^user_id)
+
+    query = apply_filters(query, filters)
+
+    page = Map.get(filters, :page, 1)
+    limit = Map.get(filters, :limit, 20)
+    offset = (page - 1) * limit
+
+    entries = query
+    |> order_by([t], desc: t.inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+    |> Repo.all()
+
+    total_count = query |> Repo.aggregate(:count, :id)
+
+    meta = %{
+      current_page: page,
+      per_page: limit,
+      total_count: total_count,
+      total_pages: ceil(total_count / limit)
+    }
+
+    {entries, meta}
+  end
+
+  def list_time_entries(user_id) when is_integer(user_id) do
+    TimeEntry
+    |> where([t], t.user_id == ^user_id)
+    |> order_by([t], desc: t.inserted_at)
+    |> Repo.all()
+  end
+
+  defp apply_filters(query, filters) do
+    query
+    |> filter_by_date_range(Map.get(filters, :start_date), Map.get(filters, :end_date))
+    |> filter_by_status(Map.get(filters, :status))
+  end
+
+  defp filter_by_date_range(query, nil, nil), do: query
+  defp filter_by_date_range(query, start_date, end_date) when is_binary(start_date) and is_binary(end_date) do
+    with {:ok, start_dt} <- Date.from_iso8601(start_date),
+         {:ok, end_dt} <- Date.from_iso8601(end_date) do
+      start_datetime = DateTime.new!(start_dt, ~T[00:00:00], "Etc/UTC")
+      end_datetime = DateTime.new!(end_dt, ~T[23:59:59], "Etc/UTC")
+
+      where(query, [t], t.clock_in >= ^start_datetime and t.clock_in <= ^end_datetime)
+    else
+      _ -> query
+    end
+  end
+  defp filter_by_date_range(query, _, _), do: query
+
+  defp filter_by_status(query, nil), do: query
+  defp filter_by_status(query, status) when is_binary(status) do
+    where(query, [t], t.status == ^status)
+  end
+
+  @doc """
+  Gets a single time_entry.
+  """
+  def get_time_entry!(id), do: Repo.get!(TimeEntry, id)
+
+  @doc """
+  Gets active (ongoing) time entry for a user.
+  """
+  def get_active_entry(user_id) do
+    TimeEntry
+    |> where([t], t.user_id == ^user_id and t.status == "in_progress")
+    |> order_by([t], desc: t.inserted_at)
+    |> limit(1)
+    |> Repo.one()
+  end
+
+  @doc """
+  Creates a time_entry.
+  """
+  def create_time_entry(attrs \\ %{}) do
+    %TimeEntry{}
+    |> TimeEntry.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Clock in a user with location data.
+  """
+  def clock_in(user_id, attrs) do
+    # Check if user already has an active entry
+    case get_active_entry(user_id) do
+      nil ->
+        attrs = attrs
+        |> Map.put("user_id", user_id)
+        |> Map.put("clock_in", DateTime.utc_now())
+        |> Map.put("status", "in_progress")
+
+        create_time_entry(attrs)
+
+      _active_entry ->
+        {:error, :already_clocked_in}
+    end
+  end
+
+  @doc """
+  Clock out a user.
+  """
+  def clock_out(user_id, notes \\ nil) do
+    case get_active_entry(user_id) do
+      nil ->
+        {:error, :not_clocked_in}
+
+      active_entry ->
+        attrs = %{
+          "clock_out" => DateTime.utc_now(),
+          "status" => "completed"
+        }
+
+        attrs = if notes, do: Map.put(attrs, "notes", notes), else: attrs
+
+        update_time_entry(active_entry, attrs)
+    end
+  end
+
+  @doc """
+  Updates a time_entry.
+  """
+  def update_time_entry(%TimeEntry{} = time_entry, attrs) do
+    time_entry
+    |> TimeEntry.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a time_entry.
+  """
+  def delete_time_entry(%TimeEntry{} = time_entry) do
+    Repo.delete(time_entry)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking time_entry changes.
+  """
+  def change_time_entry(%TimeEntry{} = time_entry, attrs \\ %{}) do
+    TimeEntry.changeset(time_entry, attrs)
+  end
+
+  @doc """
+  Get time entries for a date range.
+  """
+  def get_entries_by_date_range(user_id, start_date, end_date) do
+    TimeEntry
+    |> where([t], t.user_id == ^user_id)
+    |> where([t], t.clock_in >= ^start_date and t.clock_in <= ^end_date)
+    |> order_by([t], desc: t.clock_in)
+    |> Repo.all()
+  end
+
+  @doc """
+  Approve a time entry.
+  """
+  def approve_time_entry(time_entry_id, approver_id, notes \\ nil) do
+    time_entry = get_time_entry!(time_entry_id)
+
+    attrs = %{
+      "status" => "approved",
+      "approved_by" => approver_id,
+      "approved_at" => DateTime.utc_now()
+    }
+
+    attrs = if notes, do: Map.put(attrs, "approval_notes", notes), else: attrs
+
+    update_time_entry(time_entry, attrs)
+  end
+
+  @doc """
+  Reject a time entry.
+  """
+  def reject_time_entry(time_entry_id, rejector_id, reason) do
+    time_entry = get_time_entry!(time_entry_id)
+
+    attrs = %{
+      "status" => "rejected",
+      "rejected_by" => rejector_id,
+      "rejected_at" => DateTime.utc_now(),
+      "rejection_reason" => reason
+    }
+
+    update_time_entry(time_entry, attrs)
+  end
+
+  @doc """
+  List pending approvals for managers.
+  """
+  def list_pending_approvals(filters) do
+    query = from(t in TimeEntry, where: t.status == "pending")
+
+    # For now, don't filter by manager - show all pending entries for admins/managers
+    # TODO: Add proper team management filtering later
+
+    page = Map.get(filters, :page, 1)
+    limit = Map.get(filters, :limit, 20)
+    offset = (page - 1) * limit
+
+    entries = query
+    |> preload([:user])
+    |> order_by([t], desc: t.inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+    |> Repo.all()
+
+    total_count = query |> Repo.aggregate(:count, :id)
+
+    meta = %{
+      current_page: page,
+      per_page: limit,
+      total_count: total_count,
+      total_pages: ceil(total_count / limit)
+    }
+
+    {entries, meta}
+  end
+
+  @doc """
+  List approval history for a manager.
+  """
+  def list_approval_history(filters) do
+    query = from(t in TimeEntry,
+      where: (t.approved_by == ^filters[:approver_id] or t.rejected_by == ^filters[:approver_id])
+      and t.status in ["approved", "rejected"]
+    )
+
+    query = apply_date_filter(query, filters)
+
+    page = Map.get(filters, :page, 1)
+    limit = Map.get(filters, :limit, 20)
+    offset = (page - 1) * limit
+
+    entries = query
+    |> preload([:user])
+    |> order_by([t], desc: t.updated_at)
+    |> limit(^limit)
+    |> offset(^offset)
+    |> Repo.all()
+
+    total_count = query |> Repo.aggregate(:count, :id)
+
+    meta = %{
+      current_page: page,
+      per_page: limit,
+      total_count: total_count,
+      total_pages: ceil(total_count / limit)
+    }
+
+    {entries, meta}
+  end
+
+  defp apply_date_filter(query, %{start_date: start_date, end_date: end_date})
+    when is_binary(start_date) and is_binary(end_date) do
+    with {:ok, start_dt} <- Date.from_iso8601(start_date),
+         {:ok, end_dt} <- Date.from_iso8601(end_date) do
+      start_datetime = DateTime.new!(start_dt, ~T[00:00:00], "Etc/UTC")
+      end_datetime = DateTime.new!(end_dt, ~T[23:59:59], "Etc/UTC")
+
+      where(query, [t], t.updated_at >= ^start_datetime and t.updated_at <= ^end_datetime)
+    else
+      _ -> query
+    end
+  end
+  defp apply_date_filter(query, _), do: query
 end

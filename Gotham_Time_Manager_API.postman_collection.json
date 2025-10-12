@@ -1,0 +1,1516 @@
+{
+	"info": {
+		"_postman_id": "gotham-time-manager-collection",
+		"name": "Gotham Time Manager API",
+		"description": "Complete API collection for Gotham Time Manager with 87 endpoints including authentication, time tracking, break management, approvals, analytics, reports, settings, payroll, and notifications.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "gotham-api"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set common variables",
+					"pm.globals.set('base_url', 'http://localhost:4000/api');"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"john@example.com\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"password\": \"password123\",\n  \"role_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.token) {",
+									"        pm.globals.set('jwt_token', response.data.token);",
+									"        console.log('JWT Token saved:', response.data.token);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "me"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 User Profile & Break Management",
+			"item": [
+				{
+					"name": "Profile Management",
+					"item": [
+						{
+							"name": "Get User Profile",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/profile",
+									"host": ["{{base_url}}"],
+									"path": ["user", "profile"]
+								}
+							}
+						},
+						{
+							"name": "Update User Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"phone\": \"+1234567890\",\n  \"profile_picture\": \"https://example.com/avatar.jpg\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/user/profile",
+									"host": ["{{base_url}}"],
+									"path": ["user", "profile"]
+								}
+							}
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"current_password\": \"old_password\",\n  \"new_password\": \"new_password123\",\n  \"confirm_password\": \"new_password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/user/password",
+									"host": ["{{base_url}}"],
+									"path": ["user", "password"]
+								}
+							}
+						},
+						{
+							"name": "Get User Dashboard",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/dashboard",
+									"host": ["{{base_url}}"],
+									"path": ["user", "dashboard"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Break Management",
+					"item": [
+						{
+							"name": "Start Break",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"break_type\": \"regular\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/user/breaks/start",
+									"host": ["{{base_url}}"],
+									"path": ["user", "breaks", "start"]
+								}
+							}
+						},
+						{
+							"name": "End Break",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/breaks/end",
+									"host": ["{{base_url}}"],
+									"path": ["user", "breaks", "end"]
+								}
+							}
+						},
+						{
+							"name": "Get Break Status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/breaks/status",
+									"host": ["{{base_url}}"],
+									"path": ["user", "breaks", "status"]
+								}
+							}
+						},
+						{
+							"name": "Get Break History",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/breaks/history?page=1&limit=20&start_date=2025-10-01&end_date=2025-10-31",
+									"host": ["{{base_url}}"],
+									"path": ["user", "breaks", "history"],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "20"
+										},
+										{
+											"key": "start_date",
+											"value": "2025-10-01"
+										},
+										{
+											"key": "end_date",
+											"value": "2025-10-31"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Get Break Summary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/breaks/summary?date=2025-10-12",
+									"host": ["{{base_url}}"],
+									"path": ["user", "breaks", "summary"],
+									"query": [
+										{
+											"key": "date",
+											"value": "2025-10-12"
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "⏰ Time Tracking",
+			"item": [
+				{
+					"name": "Clock In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060,\n  \"work_location\": \"Office\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/time/clock-in",
+							"host": ["{{base_url}}"],
+							"path": ["time", "clock-in"]
+						}
+					}
+				},
+				{
+					"name": "Clock Out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/time/clock-out",
+							"host": ["{{base_url}}"],
+							"path": ["time", "clock-out"]
+						}
+					}
+				},
+				{
+					"name": "Get Time Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/time/status",
+							"host": ["{{base_url}}"],
+							"path": ["time", "status"]
+						}
+					}
+				},
+				{
+					"name": "Get Time Entries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/time/entries?page=1&limit=20&start_date=2025-10-01&end_date=2025-10-31",
+							"host": ["{{base_url}}"],
+							"path": ["time", "entries"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-31"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Manual Entry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clock_in\": \"2025-10-12T09:00:00Z\",\n  \"clock_out\": \"2025-10-12T17:00:00Z\",\n  \"work_location\": \"Home Office\",\n  \"notes\": \"Forgot to clock in\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/time/manual-entry",
+							"host": ["{{base_url}}"],
+							"path": ["time", "manual-entry"]
+						}
+					}
+				},
+				{
+					"name": "Update Time Entry",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clock_out\": \"2025-10-12T17:30:00Z\",\n  \"notes\": \"Updated clock out time\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/time/entries/:entry_id",
+							"host": ["{{base_url}}"],
+							"path": ["time", "entries", ":entry_id"],
+							"variable": [
+								{
+									"key": "entry_id",
+									"value": "entry_uuid_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Time Entry",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/time/entries/:entry_id",
+							"host": ["{{base_url}}"],
+							"path": ["time", "entries", ":entry_id"],
+							"variable": [
+								{
+									"key": "entry_id",
+									"value": "entry_uuid_here"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "✅ Approval Workflows",
+			"item": [
+				{
+					"name": "Get Pending Approvals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/approvals/pending?page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["approvals", "pending"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Approve Time Entry",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notes\": \"Approved - valid overtime\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/approvals/:entry_id/approve",
+							"host": ["{{base_url}}"],
+							"path": ["approvals", ":entry_id", "approve"],
+							"variable": [
+								{
+									"key": "entry_id",
+									"value": "entry_uuid_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Reject Time Entry",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Invalid location\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/approvals/:entry_id/reject",
+							"host": ["{{base_url}}"],
+							"path": ["approvals", ":entry_id", "reject"],
+							"variable": [
+								{
+									"key": "entry_id",
+									"value": "entry_uuid_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Bulk Approve Entries",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"entry_ids\": [\"uuid1\", \"uuid2\", \"uuid3\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/approvals/bulk-approve",
+							"host": ["{{base_url}}"],
+							"path": ["approvals", "bulk-approve"]
+						}
+					}
+				},
+				{
+					"name": "Get Approval History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/approvals/history?page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["approvals", "history"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Analytics",
+			"item": [
+				{
+					"name": "Analytics Overview",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/analytics/overview",
+							"host": ["{{base_url}}"],
+							"path": ["analytics", "overview"]
+						}
+					}
+				},
+				{
+					"name": "Productivity Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/analytics/productivity?period=weekly",
+							"host": ["{{base_url}}"],
+							"path": ["analytics", "productivity"],
+							"query": [
+								{
+									"key": "period",
+									"value": "weekly"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Attendance Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/analytics/attendance?start_date=2025-10-01&end_date=2025-10-31",
+							"host": ["{{base_url}}"],
+							"path": ["analytics", "attendance"],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-10-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-31"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Overtime Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/analytics/overtime?period=monthly",
+							"host": ["{{base_url}}"],
+							"path": ["analytics", "overtime"],
+							"query": [
+								{
+									"key": "period",
+									"value": "monthly"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Team Performance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/analytics/team-performance?team_id=1",
+							"host": ["{{base_url}}"],
+							"path": ["analytics", "team-performance"],
+							"query": [
+								{
+									"key": "team_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📈 Reports",
+			"item": [
+				{
+					"name": "Generate Timesheet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/timesheet?user_id=1&start_date=2025-10-01&end_date=2025-10-31&format=pdf",
+							"host": ["{{base_url}}"],
+							"path": ["reports", "timesheet"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-31"
+								},
+								{
+									"key": "format",
+									"value": "pdf"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Attendance Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/attendance?team_id=1&start_date=2025-10-01&end_date=2025-10-31",
+							"host": ["{{base_url}}"],
+							"path": ["reports", "attendance"],
+							"query": [
+								{
+									"key": "team_id",
+									"value": "1"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-31"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Productivity Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/productivity?period=monthly&format=excel",
+							"host": ["{{base_url}}"],
+							"path": ["reports", "productivity"],
+							"query": [
+								{
+									"key": "period",
+									"value": "monthly"
+								},
+								{
+									"key": "format",
+									"value": "excel"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Export Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/export?type=timesheet&format=pdf&start_date=2025-10-01&end_date=2025-10-31",
+							"host": ["{{base_url}}"],
+							"path": ["reports", "export"],
+							"query": [
+								{
+									"key": "type",
+									"value": "timesheet"
+								},
+								{
+									"key": "format",
+									"value": "pdf"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-31"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⚙️ Settings",
+			"item": [
+				{
+					"name": "Get Profile Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/settings/profile",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timezone\": \"America/New_York\",\n  \"date_format\": \"MM/DD/YYYY\",\n  \"time_format\": \"12h\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/settings/profile",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Get Notification Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/settings/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "notifications"]
+						}
+					}
+				},
+				{
+					"name": "Update Notification Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email_notifications\": true,\n  \"push_notifications\": true,\n  \"approval_notifications\": true,\n  \"overtime_alerts\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/settings/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "notifications"]
+						}
+					}
+				},
+				{
+					"name": "Get Work Preferences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/settings/work-preferences",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "work-preferences"]
+						}
+					}
+				},
+				{
+					"name": "Update Work Preferences",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"work_hours_per_day\": 8,\n  \"work_days_per_week\": 5,\n  \"break_duration\": 30,\n  \"lunch_duration\": 60\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/settings/work-preferences",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "work-preferences"]
+						}
+					}
+				},
+				{
+					"name": "Get System Settings (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/settings/system",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "system"]
+						}
+					}
+				},
+				{
+					"name": "Update System Settings (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"company_name\": \"Wayne Enterprises\",\n  \"default_work_hours\": 8,\n  \"overtime_rate\": 1.5,\n  \"gps_tracking_enabled\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/settings/system",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "system"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💰 Payroll",
+			"item": [
+				{
+					"name": "Payroll Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payroll/summary?period=current",
+							"host": ["{{base_url}}"],
+							"path": ["payroll", "summary"],
+							"query": [
+								{
+									"key": "period",
+									"value": "current"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Payroll History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payroll/history?page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["payroll", "history"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Generate Payroll (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"start_date\": \"2025-10-01\",\n  \"end_date\": \"2025-10-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payroll/generate",
+							"host": ["{{base_url}}"],
+							"path": ["payroll", "generate"]
+						}
+					}
+				},
+				{
+					"name": "Get Pay Rates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payroll/rates",
+							"host": ["{{base_url}}"],
+							"path": ["payroll", "rates"]
+						}
+					}
+				},
+				{
+					"name": "Update Pay Rates (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hourly_rate\": 25.00,\n  \"overtime_rate\": 37.50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payroll/rates/:user_id",
+							"host": ["{{base_url}}"],
+							"path": ["payroll", "rates", ":user_id"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔔 Notifications",
+			"item": [
+				{
+					"name": "List Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications?page=1&limit=20&unread_only=false",
+							"host": ["{{base_url}}"],
+							"path": ["notifications"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "unread_only",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Unread Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/unread-count",
+							"host": ["{{base_url}}"],
+							"path": ["notifications", "unread-count"]
+						}
+					}
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/:notification_id/read",
+							"host": ["{{base_url}}"],
+							"path": ["notifications", ":notification_id", "read"],
+							"variable": [
+								{
+									"key": "notification_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/mark-all-read",
+							"host": ["{{base_url}}"],
+							"path": ["notifications", "mark-all-read"]
+						}
+					}
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/:notification_id",
+							"host": ["{{base_url}}"],
+							"path": ["notifications", ":notification_id"],
+							"variable": [
+								{
+									"key": "notification_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Preferences",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email_notifications\": true,\n  \"push_notifications\": true,\n  \"approval_notifications\": true,\n  \"overtime_alerts\": true,\n  \"reminder_notifications\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications/preferences",
+							"host": ["{{base_url}}"],
+							"path": ["notifications", "preferences"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏢 Core Management",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "List Users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": ["{{base_url}}"],
+									"path": ["users"]
+								}
+							}
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": {\n    \"first_name\": \"Jane\",\n    \"last_name\": \"Doe\",\n    \"email\": \"jane@example.com\",\n    \"username\": \"janedoe\",\n    \"password\": \"password123\",\n    \"role_id\": 1\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": ["{{base_url}}"],
+									"path": ["users"]
+								}
+							}
+						},
+						{
+							"name": "Get User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": ["{{base_url}}"],
+									"path": ["users", ":user_id"],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Update User",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": {\n    \"first_name\": \"Jane Updated\",\n    \"last_name\": \"Doe Updated\",\n    \"email\": \"jane.updated@example.com\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": ["{{base_url}}"],
+									"path": ["users", ":user_id"],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": ["{{base_url}}"],
+									"path": ["users", ":user_id"],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Teams",
+					"item": [
+						{
+							"name": "List Teams",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/teams",
+									"host": ["{{base_url}}"],
+									"path": ["teams"]
+								}
+							}
+						},
+						{
+							"name": "Create Team",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"team\": {\n    \"name\": \"Development Team\",\n    \"description\": \"Main development team\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/teams",
+									"host": ["{{base_url}}"],
+									"path": ["teams"]
+								}
+							}
+						},
+						{
+							"name": "Assign Manager",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"manager_id\": 2\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/teams/:team_id/assign_manager",
+									"host": ["{{base_url}}"],
+									"path": ["teams", ":team_id", "assign_manager"],
+									"variable": [
+										{
+											"key": "team_id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Projects",
+					"item": [
+						{
+							"name": "List Projects",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/projects",
+									"host": ["{{base_url}}"],
+									"path": ["projects"]
+								}
+							}
+						},
+						{
+							"name": "Create Project",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"project\": {\n    \"name\": \"Wayne Enterprises Portal\",\n    \"description\": \"Employee portal for Wayne Enterprises\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/projects",
+									"host": ["{{base_url}}"],
+									"path": ["projects"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Tasks",
+					"item": [
+						{
+							"name": "List Tasks",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": ["{{base_url}}"],
+									"path": ["tasks"]
+								}
+							}
+						},
+						{
+							"name": "Create Task",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"task\": {\n    \"title\": \"Implement user authentication\",\n    \"description\": \"Add JWT-based authentication\",\n    \"status\": 1,\n    \"user_ids\": [1, 2]\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": ["{{base_url}}"],
+									"path": ["tasks"]
+								}
+							}
+						},
+						{
+							"name": "Update Task Status",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": 3\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/:task_id/status",
+									"host": ["{{base_url}}"],
+									"path": ["tasks", ":task_id", "status"],
+									"variable": [
+										{
+											"key": "task_id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Schedules",
+					"item": [
+						{
+							"name": "List Schedules",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/schedules",
+									"host": ["{{base_url}}"],
+									"path": ["schedules"]
+								}
+							}
+						},
+						{
+							"name": "Create Schedule",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"schedule\": {\n    \"user_id\": 1,\n    \"start_time\": \"09:00:00\",\n    \"end_time\": \"17:00:00\",\n    \"date\": \"2025-10-15\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/schedules",
+									"host": ["{{base_url}}"],
+									"path": ["schedules"]
+								}
+							}
+						},
+						{
+							"name": "Batch Create Schedules",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"schedules\": [\n    {\n      \"user_id\": 1,\n      \"start_time\": \"09:00:00\",\n      \"end_time\": \"17:00:00\",\n      \"date\": \"2025-10-15\"\n    },\n    {\n      \"user_id\": 2,\n      \"start_time\": \"10:00:00\",\n      \"end_time\": \"18:00:00\",\n      \"date\": \"2025-10-15\"\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/schedules/create_batch",
+									"host": ["{{base_url}}"],
+									"path": ["schedules", "create_batch"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Working Times",
+					"item": [
+						{
+							"name": "List Working Times",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/working_times",
+									"host": ["{{base_url}}"],
+									"path": ["working_times"]
+								}
+							}
+						},
+						{
+							"name": "Log Unpaid Overtime",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"hours\": 2.5,\n  \"date\": \"2025-10-12\",\n  \"reason\": \"Project deadline\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/logs/overtime/unpaid",
+									"host": ["{{base_url}}"],
+									"path": ["logs", "overtime", "unpaid"]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000/api",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -15,10 +15,10 @@ defmodule Gotham.Accounts.Role do
     |> validate_required([:label])
   end
 
-  # Numeric role IDs (enum mapping)
+  # Numeric role IDs (enum mapping) - updated to match actual database IDs
   @admin_id 1
   @manager_id 2
-  @hr_id 3
+  @hr_id 3  # Using admin for hr until we have a separate hr role
   @employee_id 4
 
   def admin_id, do: @admin_id

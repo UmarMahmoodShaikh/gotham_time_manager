@@ -14,8 +14,17 @@ defmodule Gotham.Accounts.User do
     field :password, :string, virtual: true
     field :is_visually_challenged, :boolean, default: false
     field :is_active, :boolean, default: true
+    field :department, :string
+    field :position, :string
+    field :status, :string, default: "active"
+    field :hire_date, :date
 
     belongs_to :role, Gotham.Accounts.Role
+    belongs_to :manager, Gotham.Accounts.User
+    has_many :managed_users, Gotham.Accounts.User, foreign_key: :manager_id
+    has_many :working_times, Gotham.TimeTracking.WorkingTime
+    has_many :sessions, Gotham.Accounts.Session
+
     timestamps(type: :utc_datetime)
   end
 
@@ -31,7 +40,12 @@ defmodule Gotham.Accounts.User do
       :last_name,
       :is_visually_challenged,
       :is_active,
-      :role_id
+      :role_id,
+      :department,
+      :position,
+      :manager_id,
+      :status,
+      :hire_date
     ])
     |> validate_required([:personal_email, :first_name, :last_name])
     |> validate_format(:personal_email, ~r/@/)
@@ -39,6 +53,8 @@ defmodule Gotham.Accounts.User do
     |> default_role_id()
     |> put_password_hash()
     |> unique_constraint(:email)
+    |> unique_constraint(:personal_email)
+    |> unique_constraint(:username)
   end
 
   defp default_role_id(changeset) do

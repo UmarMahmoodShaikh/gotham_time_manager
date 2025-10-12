@@ -36,11 +36,23 @@ defmodule GothamWeb.Router do
     post "/sign_up", AuthController, :sign_up
     post "/sign_in", AuthController, :sign_in
     delete "/sign_out", AuthController, :sign_out
+
+    # Additional login/logout endpoints for API documentation compatibility
+    post "/login", AuthController, :login
+    post "/logout", AuthController, :logout
+
+    # JWT-based auth endpoints for Postman collection compatibility
+    post "/auth/register", AuthController, :register
+    post "/auth/login", AuthController, :auth_login
+    post "/auth/logout", AuthController, :auth_logout
   end
 
   # Protected API routes
   scope "/api", GothamWeb do
     pipe_through [:api, :auth]
+
+    # Protected auth endpoint
+    get "/auth/me", AuthController, :me
 
     # Users
     resources "/users", UserController, except: []
@@ -58,6 +70,70 @@ defmodule GothamWeb.Router do
     post "/workingtime/:userID", WorkingTimeController, :create
     put "/workingtime/:id", WorkingTimeController, :update
     delete "/workingtime/:id", WorkingTimeController, :delete
+
+    # Time Tracking API (Time Manager Documentation)
+    post "/time-tracking/clock-in", TimeTrackingController, :clock_in
+    post "/time-tracking/clock-out", TimeTrackingController, :clock_out
+    get "/time-tracking/status", TimeTrackingController, :status
+    get "/time-tracking/entries", TimeTrackingController, :entries
+    post "/time-tracking/manual-entry", TimeTrackingController, :create_manual_entry
+    put "/time-tracking/entries/:id", TimeTrackingController, :update_entry
+    delete "/time-tracking/entries/:id", TimeTrackingController, :delete_entry
+
+    # Approvals API
+    get "/approvals/pending", ApprovalController, :pending
+    post "/approvals/:id/approve", ApprovalController, :approve
+    post "/approvals/:id/reject", ApprovalController, :reject
+    post "/approvals/bulk-approve", ApprovalController, :bulk_approve
+    get "/approvals/history", ApprovalController, :history
+
+    # Analytics API
+    get "/analytics/dashboard", AnalyticsController, :dashboard
+    get "/analytics/team-performance", AnalyticsController, :team_performance
+    get "/analytics/attendance-trends", AnalyticsController, :attendance_trends
+    get "/analytics/productivity-insights", AnalyticsController, :productivity_insights
+
+    # Reports API
+    get "/reports/timesheet", ReportsController, :timesheet
+    get "/reports/attendance", ReportsController, :attendance
+    get "/reports/payroll", ReportsController, :payroll
+    get "/reports/overtime", ReportsController, :overtime
+
+    # Settings API
+    get "/settings/profile", SettingsController, :profile
+    put "/settings/profile", SettingsController, :update_profile
+    get "/settings/notifications", SettingsController, :notifications
+    put "/settings/notifications", SettingsController, :update_notifications
+    get "/settings/work-preferences", SettingsController, :work_preferences
+    put "/settings/work-preferences", SettingsController, :update_work_preferences
+    get "/settings/system", SettingsController, :system
+    put "/settings/system", SettingsController, :update_system
+
+    # Payroll API
+    get "/payroll/summary", PayrollController, :summary
+    get "/payroll/history", PayrollController, :history
+    post "/payroll/generate", PayrollController, :generate
+    get "/payroll/rates", PayrollController, :rates
+    put "/payroll/rates/:user_id", PayrollController, :update_rates
+
+    # Notification API
+    get "/notifications", NotificationController, :index
+    get "/notifications/unread-count", NotificationController, :unread_count
+    put "/notifications/:id/read", NotificationController, :mark_as_read
+    put "/notifications/mark-all-read", NotificationController, :mark_all_as_read
+    delete "/notifications/:id", NotificationController, :delete
+    post "/notifications/preferences", NotificationController, :update_preferences
+
+    # User Profile & Break Management API
+    get "/user/profile", UserProfileController, :show
+    put "/user/profile", UserProfileController, :update
+    put "/user/password", UserProfileController, :change_password
+    get "/user/dashboard", UserProfileController, :dashboard
+    post "/user/breaks/start", UserProfileController, :start_break
+    post "/user/breaks/end", UserProfileController, :end_break
+    get "/user/breaks/status", UserProfileController, :break_status
+    get "/user/breaks/history", UserProfileController, :break_history
+    get "/user/breaks/summary", UserProfileController, :break_summary
 
     # WorkingTimes for payroll and generic access
     resources "/working_times", WorkingTimeController, except: [:new, :edit]
