@@ -11,13 +11,13 @@ defmodule Gotham.Repo.Migrations.AddMissingFieldsToWorkingTimes do
       add :is_manual, :boolean, default: false
       add :justification, :text
       add :notes, :text
-      add :approved_by, references(:users, on_delete: :nilify_all)
+      add :approved_by_id, references(:users, on_delete: :nilify_all)
       add :approved_at, :utc_datetime
       add :rejection_reason, :text
     end
 
     create index(:working_times, [:status])
-    create index(:working_times, [:approved_by])
+    create index(:working_times, [:approved_by_id])
     create index(:working_times, [:work_location])
   end
 end
