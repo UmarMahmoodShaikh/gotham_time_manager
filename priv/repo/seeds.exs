@@ -9,7 +9,7 @@ alias Gotham.TimeTracking.{Clock, WorkingTime}
 Faker.start()
 
 # Helper function to insert many records
-defp insert_many(module, count, attrs_fun) do
+insert_many = fn module, count, attrs_fun ->
   Enum.each(1..count, fn _ ->
     %module{}
     |> module.changeset(attrs_fun.())
@@ -22,7 +22,7 @@ end
 # --------------------------
 IO.puts("Seeding Roles...")
 
-insert_many(Role, 100, fn ->
+insert_many.(Role, 100, fn ->
   %{
     name: Faker.Job.title()
   }
